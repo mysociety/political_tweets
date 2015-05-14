@@ -1,5 +1,6 @@
 require 'dotenv/tasks'
 require 'resque/tasks'
+require 'rake/testtask'
 require_relative './app'
 
 namespace :db do
@@ -19,3 +20,7 @@ namespace :db do
 end
 
 task "resque:setup" => :dotenv
+
+Rake::TestTask.new do |t|
+  t.pattern = "test/*_test.rb"
+end
