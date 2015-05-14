@@ -11,6 +11,16 @@ require 'twitter'
 require 'dotenv'
 Dotenv.load
 
+# Get a list of countries in EveryPolitician
+countries_list = JSON.parse(open('http://data.everypolitician.org/countries.json').read)
+$countries = {}
+countries_list.each do |country|
+  $countries[country['url']] = {
+    name: country['name'],
+    latest_term_csv: country['latest_term_csv']
+  }
+end
+
 DB = Sequel.connect(ENV['DATABASE_URL'])
 
 # Resque Jobs
@@ -21,8 +31,8 @@ class FetchDataJob
   def self.perform(token_id)
     tokens = DB[:tokens]
     token = tokens.where(id: token_id).first
-    # Fetch data from EPD for country
-    data = open('http://data.everypolitician.org/wales/term_table/4.csv').read
+    latest_term_csv = $countries[token[:country]]
+    data = open('http://data.everypolitician.org' + latest_term_csv).read
     client = Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV['TWITTER_KEY']
       config.consumer_secret     = ENV['TWITTER_SECRET']
@@ -49,12 +59,7 @@ end
 
 enable :sessions
 set :session_secret, (ENV['SESSION_SECRET'] || SecureRandom.hex(64))
-countries_list = JSON.parse(open('http://data.everypolitician.org/countries.json').read)
-countries = {}
-countries_list.each do |country|
-  countries[country['url']] = country['name']
-end
-set :countries, countries
+set :countries, $countries
 
 use OmniAuth::Builder do
   provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']

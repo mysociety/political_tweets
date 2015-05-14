@@ -4,7 +4,7 @@
   <p>Please select a country:</p>
   <select name="country">
     <% settings.countries.each do |url, country| %>
-      <option value="<%= url %>"><%= country %></option>
+      <option value="<%= url %>"><%= country[:name] %></option>
     <% end %>
   </select>
 
