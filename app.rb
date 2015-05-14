@@ -12,7 +12,12 @@ require 'dotenv'
 Dotenv.load
 
 # Get a list of countries in EveryPolitician
-countries_list = JSON.parse(open('http://data.everypolitician.org/countries.json').read)
+if settings.environment == :production
+  countries_json = open('http://data.everypolitician.org/countries.json').read
+else
+  countries_json = open('data/countries.json').read
+end
+countries_list = JSON.parse(countries_json)
 $countries = {}
 countries_list.each do |country|
   $countries[country['url']] = {
