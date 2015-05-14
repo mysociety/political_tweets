@@ -6,4 +6,5 @@ gem 'omniauth-twitter'
 gem 'dotenv'
 gem 'rake'
 gem 'sequel'
-gem 'sqlite3'
+gem 'sqlite3', groups: [:development, :test]
+gem 'pg', group: :production
