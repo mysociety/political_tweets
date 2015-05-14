@@ -1,0 +1,62 @@
+html, body {
+    // Set a sizing context for children of body
+    // eg: so they can stretch to full window height.
+    width: 100%;
+    height: 100%;
+    display: relative;
+}
+
+*, *:before, *:after {
+    @include box-sizing(border-box);
+}
+
+.site-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 15em;
+    overflow: auto;
+}
+
+.area-list {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 15em;
+    width: 18em;
+    overflow: auto;
+}
+
+.site-content {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    left: 15em + 18em;
+    overflow: auto;
+}
+
+.site-content__tweets {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: 30em;
+}
+
+.site-content__people {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 30em;
+}
+
+.twitter-timeline {
+    height: 100% !important;
+    display: block !important;
+}

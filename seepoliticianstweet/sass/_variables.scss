@@ -1,0 +1,33 @@
+$fa-font-path: "../fonts/";
+
+$increment: 1em / 16; // should an em value equal to 1 pixel
+
+$screen-huge-min: 90em;
+$screen-large-max: $screen-huge-min - $increment;
+$screen-large-min: 64em;
+$screen-medium-max: $screen-large-min - $increment;
+$screen-medium-min: 40em;
+$screen-small-max: $screen-medium-min - $increment;
+$screen-small-min: 0em;
+
+$color-bluegrey-50: #ECEFF1;
+$color-bluegrey-100: #CFD8DC;
+$color-bluegrey-200: #B0BEC5;
+$color-bluegrey-300: #90A4AE;
+$color-bluegrey-400: #78909C;
+$color-bluegrey-500: #607D8B;
+$color-bluegrey-600: #546E7A;
+$color-bluegrey-700: #455A64;
+$color-bluegrey-800: #37474F;
+$color-bluegrey-900: #263238;
+
+$color-blue-50: #E3F2FD;
+$color-blue-100: #BBDEFB;
+$color-blue-200: #90CAF9;
+$color-blue-300: #64B5F6;
+$color-blue-400: #42A5F5;
+$color-blue-500: #2196F3;
+$color-blue-600: #1E88E5;
+$color-blue-700: #1976D2;
+$color-blue-800: #1565C0;
+$color-blue-900: #0D47A1;

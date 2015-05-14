@@ -1,0 +1,46 @@
+.site-content--empty {
+    padding: 3em 1em;
+    text-align: center;
+    color: $color-bluegrey-400;
+
+    p {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        margin-top: -0.5em;
+    }
+}
+
+.site-content {
+    a.twitter-timeline {
+        padding: 1em;
+    }
+}
+
+.site-content__people {
+    padding: 1em;
+    background-color: $color-bluegrey-50;
+    border-left: 1px solid $color-bluegrey-100;
+
+    & > :first-child {
+        margin-top: 0;
+    }
+
+    h2 {
+        font-size: 1em;
+        color: $color-bluegrey-500;
+    }
+
+    h3 {
+        margin-bottom: 0.1em;
+
+        & + p {
+            margin-top: 0;
+        }
+    }
+
+    .person + h2 {
+        margin-top: 2em;
+    }
+}

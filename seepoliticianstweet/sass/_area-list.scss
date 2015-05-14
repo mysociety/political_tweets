@@ -1,0 +1,21 @@
+.area-list {
+    background-color: $color-bluegrey-50;
+    border-right: 1px solid $color-bluegrey-100;
+
+    a {
+        display: block;
+        padding: 0.8em 1em;
+        text-decoration: none;
+        border-bottom: 1px solid mix($color-bluegrey-50, $color-bluegrey-100, 50%);
+
+        &:hover,
+        &:focus {
+            background-color: $color-bluegrey-100;
+        }
+
+        &.selected {
+            background-color: $color-blue-500;
+            color: #fff;
+        }
+    }
+}

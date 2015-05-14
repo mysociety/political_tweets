@@ -1,0 +1,60 @@
+.site-header {
+    text-align: center;
+    padding: 1em;
+    background-color: $color-bluegrey-900;
+    color: #fff;
+
+    h2 {
+        color: $color-bluegrey-200;
+        font-weight: inherit;
+        font-size: 1.2em;
+    }
+
+    h1 {
+        margin: 0;
+
+        a {
+            display: block;
+            color: inherit;
+            text-decoration: none;
+            border-top: 1px solid $color-bluegrey-800;
+            border-bottom: 1px solid $color-bluegrey-800;
+            padding: 0.5em 0;
+            margin: 0.5em 0;
+
+            &:hover,
+            &:focus {
+                color: $color-bluegrey-50;
+            }
+        }
+    }
+
+    p {
+        color: $color-bluegrey-200;
+    }
+}
+
+.site-logo {
+    font-size: 3em;
+    color: $color-bluegrey-700;
+    text-shadow: 0 1px 0 $color-bluegrey-400;
+}
+
+.site-header__about {
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+    right: 1em;
+
+    p {
+        color: $color-bluegrey-400;
+    }
+
+    a {
+        color: $color-bluegrey-200;
+
+        .fa {
+            margin-left: 0.4em;
+        }
+    }
+}
