@@ -40,7 +40,7 @@ class FetchDataJob
       config.access_token_secret = token[:secret]
     end
     csv = CSV.parse(data, headers: true)
-    areas = csv.map { |r| r['area'] }.uniq
+    areas = csv.map { |r| r['area'] }.compact.uniq
     areas.each do |area|
       # Twitter list names must be 25 chars or less
       if area.length > 25
