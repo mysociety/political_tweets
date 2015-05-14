@@ -4,7 +4,7 @@ Generate Twitter lists for elected representatives using [Popolo](http://www.pop
 
 ## Install
 
-You'll need to have ruby and bundler installed locally in order to install this project.
+You'll need to have ruby, bundler and redis installed locally in order to install this project.
 
 First clone this repository from GitHub:
 
@@ -23,8 +23,8 @@ Now you'll need to [create a Twitter application](https://apps.twitter.com). Onc
 
 ## Usage
 
-The application is a Sinatra app, to run it execute the `app.rb` file directly with ruby.
+The application is made up of a Sinatra app and Resque background workers. In order to run all of these at once first install [Foreman](https://github.com/ddollar/foreman#installation) and then run:
 
-    bundle exec rackup
+    foreman start
 
-Then you can view the application at http://localhost:9292/
+Then you can view the application at http://localhost:5000/
