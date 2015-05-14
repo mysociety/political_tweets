@@ -1,4 +1,6 @@
 require 'dotenv/tasks'
+require 'resque/tasks'
+require_relative './app'
 
 namespace :db do
   desc "Run migrations"
@@ -15,3 +17,5 @@ namespace :db do
     end
   end
 end
+
+task "resque:setup" => :dotenv

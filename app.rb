@@ -4,8 +4,48 @@ require 'securerandom'
 require 'sequel'
 require 'open-uri'
 require 'json'
+require 'resque'
+require 'csv'
+require 'twitter'
+
 require 'dotenv'
 Dotenv.load
+
+DB = Sequel.connect(ENV['DATABASE_URL'])
+
+# Resque Jobs
+
+class FetchDataJob
+  @queue = :default
+
+  def self.perform(token_id)
+    tokens = DB[:tokens]
+    token = tokens.where(id: token_id).first
+    # Fetch data from EPD for country
+    data = open('http://data.everypolitician.org/wales/term_table/4.csv').read
+    client = Twitter::REST::Client.new do |config|
+      config.consumer_key        = ENV['TWITTER_KEY']
+      config.consumer_secret     = ENV['TWITTER_SECRET']
+      config.access_token        = token[:token]
+      config.access_token_secret = token[:secret]
+    end
+    csv = CSV.parse(data, headers: true)
+    areas = csv.map { |r| r['area'] }.uniq
+    areas.each do |area|
+      # Twitter list names must be 25 chars or less
+      if area.length > 25
+        area = area[0...25]
+      end
+      list = client.create_list(area)
+      list_members = csv.select do |row|
+        row['area'] == area && row['twitter']
+      end.map { |m| m['twitter'] }
+      client.add_list_members(list, list_members)
+    end
+  end
+end
+
+# Sinatra Application
 
 enable :sessions
 set :session_secret, (ENV['SESSION_SECRET'] || SecureRandom.hex(64))
@@ -15,8 +55,6 @@ countries_list.each do |country|
   countries[country['url']] = country['name']
 end
 set :countries, countries
-
-DB = Sequel.connect(ENV['DATABASE_URL'])
 
 use OmniAuth::Builder do
   provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
@@ -45,7 +83,7 @@ get '/auth/:name/callback' do
   )
   session[:token_id] = token_id
 
-  # Queue job for generating lists and static site
+  Resque.enqueue(FetchDataJob, token_id)
 
   redirect to('/success')
 end
