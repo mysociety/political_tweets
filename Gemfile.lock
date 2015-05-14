@@ -17,10 +17,13 @@ GEM
     rack (1.6.1)
     rack-protection (1.5.3)
       rack
+    rake (10.4.2)
+    sequel (4.21.0)
     sinatra (1.4.6)
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
+    sqlite3 (1.3.10)
     tilt (2.0.1)
 
 PLATFORMS
@@ -30,4 +33,7 @@ DEPENDENCIES
   dotenv
   omniauth
   omniauth-twitter
+  rake
+  sequel
   sinatra
+  sqlite3
