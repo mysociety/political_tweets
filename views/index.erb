@@ -1,0 +1,12 @@
+<h1>Political tweets</h1>
+
+<form action="<%= url('/choose-country') %>" method="post">
+  <p>Please select a country:</p>
+  <select name="country">
+    <% settings.countries.each do |url, country| %>
+      <option value="<%= url %>"><%= country %></option>
+    <% end %>
+  </select>
+
+  <input type="submit" value="Sign in with Twitter">
+</form>
