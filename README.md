@@ -25,4 +25,6 @@ Now you'll need to [create a Twitter application](https://apps.twitter.com). Onc
 
 The application is a Sinatra app, to run it execute the `app.rb` file directly with ruby.
 
-    bundle exec ruby app.rb
+    bundle exec rackup
+
+Then you can view the application at http://localhost:9292/
