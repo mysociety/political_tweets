@@ -52,14 +52,14 @@ class FetchDataJob
         area = area[0...25]
       end
       list = client.create_list(area)
-      list_members = csv.select do |row|
-        row['area'] == area && row['twitter']
-      end.map { |m| m['twitter'] }
+      list_members = csv.map do |row|
+        row['twitter'] if row['area'] == area && row['twitter']
+      end.compact
       client.add_list_members(list, list_members)
     end
 
     all_list = client.create_list('All')
-    all_twitter_handles = csv.select { |row| row['twitter'] }.map { |m| m['twitter'] }
+    all_twitter_handles = csv.map { |row| row['twitter'] if row['twitter'] }.compact
     client.add_list_members(all_list, all_twitter_handles)
   end
 end
