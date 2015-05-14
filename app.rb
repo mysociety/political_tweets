@@ -31,7 +31,7 @@ class FetchDataJob
   def self.perform(token_id)
     tokens = DB[:tokens]
     token = tokens.where(id: token_id).first
-    latest_term_csv = $countries[token[:country]]
+    latest_term_csv = $countries[token[:country]][:latest_term_csv]
     data = open('http://data.everypolitician.org' + latest_term_csv).read
     client = Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV['TWITTER_KEY']
