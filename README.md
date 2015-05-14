@@ -21,6 +21,10 @@ Copy the example `.env` file.
 
 Now you'll need to [create a Twitter application](https://apps.twitter.com). Once created edit the `.env` file with the Consumer Key and Consumer secret of your newly created app.
 
+Then you'll need to migrate the database.
+
+    bundle exec rake db:migrate
+
 ## Usage
 
 The application is made up of a Sinatra app and Resque background workers. In order to run all of these at once first install [Foreman](https://github.com/ddollar/foreman#installation) and then run:
