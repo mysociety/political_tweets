@@ -52,6 +52,10 @@ class FetchDataJob
       end.map { |m| m['twitter'] }
       client.add_list_members(list, list_members)
     end
+
+    all_list = client.create_list('All')
+    all_twitter_handles = csv.select { |row| row['twitter'] }.map { |m| m['twitter'] }
+    client.add_list_members(all_list, all_twitter_handles)
   end
 end
 
