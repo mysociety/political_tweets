@@ -1,11 +1,10 @@
-require 'dotenv/tasks'
 require 'resque/tasks'
 require 'rake/testtask'
 require_relative './app'
 
 namespace :db do
   desc "Run migrations"
-  task :migrate, [:version] => :dotenv do |t, args|
+  task :migrate, [:version] do |t, args|
     require "sequel"
     Sequel.extension :migration
     db = Sequel.connect(ENV.fetch("DATABASE_URL"))
@@ -18,8 +17,6 @@ namespace :db do
     end
   end
 end
-
-task "resque:setup" => :dotenv
 
 Rake::TestTask.new do |t|
   t.pattern = "test/*_test.rb"
