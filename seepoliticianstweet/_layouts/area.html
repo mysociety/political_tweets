@@ -1,0 +1,35 @@
+---
+layout: default
+---
+<div class="site-content">
+    <div class="site-content__tweets">
+        <a class="twitter-timeline"
+          data-dnt="true"
+          data-chrome="noborders"
+          href="https://twitter.com/{{ site.list_owner_screen_name }}/lists/{{ page.list_slug }}"
+          data-widget-id="598799140756320256"
+          data-list-owner-screen-name="{{ site.list_owner_screen_name }}"
+          data-list-slug="{{ page.list_slug }}">
+          Tweets from https://twitter.com/{{ site.list_owner_screen_name }}/lists/{{ page.list_slug }}
+        </a>
+    </div>
+    <div class="site-content__people">
+        <h2>Politicians tweeting here:</h2>
+        {% for politician in page.politicians %}
+        <div class="person">
+          <h3>{{ politician.name }}</h3>
+          <p><a href="#">@{{ politician.screen_name }}</a></p>
+        </div>
+        {% endfor %}
+
+        <h2>Politicians not on Twitter</h2>
+        <form class="person">
+            <h3>Anne Archy (Party 3)</h3>
+            <p>
+                <label for="id_username_123">Add this person’s Twitter username:</label>
+                <input id="id_username_123" class="form-control" type="text" placeholder="@username">
+                <button type="submit" class="button">Save</button>
+            </p>
+        </form>
+    </div>
+</div>
