@@ -15,9 +15,9 @@ else
   countries_json = open('data/countries.json').read
 end
 countries_list = JSON.parse(countries_json)
-$countries = {}
+countries = {}
 countries_list.each do |country|
-  $countries[country['url']] = {
+  countries[country['url']] = {
     name: country['name'],
     latest_term_csv: country['latest_term_csv']
   }
@@ -27,13 +27,14 @@ DB = Sequel.connect(ENV['DATABASE_URL'])
 
 # Resque Jobs
 
+# Resque job to create Twitter lists from country data
 class FetchDataJob
   @queue = :default
 
   def self.perform(token_id)
     tokens = DB[:tokens]
     token = tokens.where(id: token_id).first
-    latest_term_csv = $countries[token[:country]][:latest_term_csv]
+    latest_term_csv = countries[token[:country]][:latest_term_csv]
     data = open('http://data.everypolitician.org' + latest_term_csv).read
     client = Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV['TWITTER_KEY']
@@ -56,7 +57,9 @@ class FetchDataJob
     end
 
     all_list = client.create_list('All')
-    all_twitter_handles = csv.map { |row| row['twitter'] if row['twitter'] }.compact
+    all_twitter_handles = csv.map do|row|
+      row['twitter'] if row['twitter']
+    end.compact
     client.add_list_members(all_list, all_twitter_handles)
   end
 end
@@ -66,7 +69,7 @@ end
 configure do
   enable :sessions
   set :session_secret, ENV.fetch('SESSION_SECRET')
-  set :countries, $countries
+  set :countries, countries
 
   Resque.redis = ENV['REDISTOGO_URL']
 end
