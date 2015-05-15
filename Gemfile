@@ -10,3 +10,4 @@ gem 'pg', group: :production
 gem 'resque'
 gem 'twitter'
 gem 'rack-test', group: :test
+gem 'puma'
