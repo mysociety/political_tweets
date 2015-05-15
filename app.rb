@@ -1,6 +1,5 @@
 require 'sinatra'
 require 'omniauth-twitter'
-require 'securerandom'
 require 'sequel'
 require 'open-uri'
 require 'json'
@@ -65,7 +64,7 @@ end
 
 configure do
   enable :sessions
-  set :session_secret, (ENV['SESSION_SECRET'] || SecureRandom.hex(64))
+  set :session_secret, ENV.fetch('SESSION_SECRET')
   set :countries, $countries
 
   redis_url = ENV["REDISCLOUD_URL"] || ENV["OPENREDIS_URL"] || ENV["REDISGREEN_URL"] || ENV["REDISTOGO_URL"]
