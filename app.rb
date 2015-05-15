@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'tilt/erb'
 require 'omniauth-twitter'
 require 'sequel'
 require 'open-uri'
