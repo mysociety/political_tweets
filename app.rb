@@ -9,6 +9,9 @@ require 'resque'
 require 'csv'
 require 'twitter'
 
+require 'dotenv'
+Dotenv.load
+
 # Get a list of countries in EveryPolitician
 if settings.environment == :production
   $countries_json = open('http://data.everypolitician.org/countries.json').read
