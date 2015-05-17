@@ -107,8 +107,11 @@ class JekyllSiteGenerator
       end
 
       Dir.chdir("#{dir}/repo") do
-        # FIXME: Don't hardcode wales here
-        repo = gh_client.create_repository('wales', organization: 'seepoliticianstweet')
+        repo = gh_client.create_repository(
+          @data[:base_url].gsub('/', ''),
+          organization: 'seepoliticianstweet',
+          homepage: "https://seepoliticianstweet.github.io#{@data[:base_url]}"
+        )
         repo_clone_url = URI.parse(repo.clone_url)
         repo_clone_url.user = gh_client.login
         repo_clone_url.password = gh_client.access_token
