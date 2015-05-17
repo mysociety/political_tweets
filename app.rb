@@ -56,6 +56,7 @@ def parse_areas_from_csv(csv)
 end
 
 def create_lists_for_areas(areas, client)
+  all_lists = client.lists
   areas.map do |area|
     # Twitter list names must be 25 chars or less
     name = area[:name]
@@ -63,7 +64,12 @@ def create_lists_for_areas(areas, client)
       name = name[0...25]
     end
 
-    list = client.create_list(name)
+    list = all_lists.find { |list| list.name == name }
+
+    if !list
+      list = client.create_list(name)
+    end
+
     area[:list_id] = list.id
     area[:list_slug] = list.slug
 
@@ -122,7 +128,10 @@ class FetchDataJob
     areas = create_lists_for_areas(areas, client)
 
     # Create a list with all members in
-    all_list = client.create_list('All')
+    all_list = client.lists.find { |list| list.name == 'All' }
+    if !all_list
+      all_list = client.create_list('All')
+    end
     all_twitter_handles = csv.map do|row|
       row['twitter'] if row['twitter']
     end.compact
