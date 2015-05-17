@@ -12,3 +12,4 @@ gem 'resque'
 gem 'twitter'
 gem 'rack-test', group: :test
 gem 'puma'
+gem 'octokit'

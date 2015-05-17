@@ -8,6 +8,7 @@ require 'json'
 require 'resque'
 require 'csv'
 require 'twitter'
+require 'octokit'
 
 require 'dotenv'
 Dotenv.load
@@ -81,9 +82,8 @@ def create_lists_for_areas(areas, client)
 end
 
 class JekyllSiteGenerator
-  def initialize(data, output_path)
+  def initialize(data)
     @data = data
-    @output_path = output_path
   end
 
   def generate
@@ -104,8 +104,22 @@ class JekyllSiteGenerator
           f.puts(template.render(self, area))
         end
       end
-      FileUtils.cp_r("#{dir}/repo", @output_path)
+
+      Dir.chdir("#{dir}/repo") do
+        # FIXME: Don't hardcode wales here
+        repo = gh_client.create_repository('wales', organization: 'seepoliticianstweet')
+        repo_clone_url = URI.parse(repo.clone_url)
+        repo_clone_url.user = gh_client.login
+        repo_clone_url.password = gh_client.access_token
+        `git init && git add . && git commit -m "Auto-generated site for #{@data[:country_name]}"`
+        `git remote add github #{repo_clone_url}`
+        `git push --quiet github master:gh-pages`
+      end
     end
+  end
+
+  def gh_client
+    @gh_client ||= Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
   end
 end
 
@@ -143,9 +157,8 @@ class FetchDataJob
       list_owner_screen_name: client.user.screen_name,
       areas: areas
     }
-    output_path = "#{ENV['HOME']}/Desktop/generated-jekyll-site"
 
-    JekyllSiteGenerator.new(data, output_path).generate
+    JekyllSiteGenerator.new(data).generate
   end
 end
 
