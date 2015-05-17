@@ -93,7 +93,8 @@ class JekyllSiteGenerator
       config_yml = template.render(
         self,
         country_name: @data[:country_name],
-        list_owner_screen_name: @data[:list_owner_screen_name]
+        list_owner_screen_name: @data[:list_owner_screen_name],
+        base_url: @data[:base_url]
       )
       File.open("#{dir}/repo/_config.yml", 'w') do |f|
         f.puts(config_yml)
@@ -153,6 +154,7 @@ class FetchDataJob
 
     # Generate the static site
     data = {
+      base_url: token[:country],
       country_name: countries[token[:country]][:name],
       list_owner_screen_name: client.user.screen_name,
       areas: areas
