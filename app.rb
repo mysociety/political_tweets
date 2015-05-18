@@ -88,38 +88,59 @@ class JekyllSiteGenerator
 
   def generate
     Dir.mktmpdir do |dir|
-      FileUtils.cp_r('jekyll/repo', dir)
-      template = Tilt.new('jekyll/templates/_config.yml.erb')
-      config_yml = template.render(
-        self,
-        country_name: @data[:country_name],
-        list_owner_screen_name: @data[:list_owner_screen_name],
-        base_url: @data[:base_url]
-      )
-      File.open("#{dir}/repo/_config.yml", 'w') do |f|
-        f.puts(config_yml)
-      end
-      template = Tilt.new('jekyll/templates/area.html.erb')
-      @data[:areas].each do |area|
-        File.open("#{dir}/repo/_areas/#{area[:list_slug]}.html", 'w') do |f|
-          f.puts(template.render(self, area))
-        end
-      end
+      Dir.chdir(dir) do
+        create_or_update_repo(dir)
 
-      Dir.chdir("#{dir}/repo") do
-        repo = gh_client.create_repository(
-          @data[:base_url].gsub('/', ''),
-          organization: 'seepoliticianstweet',
-          homepage: "https://seepoliticianstweet.github.io#{@data[:base_url]}"
+        templates_dir = File.expand_path(File.join('..', 'jekyll', 'templates'), __FILE__)
+        template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
+        config_yml = template.render(
+          self,
+          country_name: @data[:country_name],
+          list_owner_screen_name: @data[:list_owner_screen_name],
+          base_url: @data[:base_url]
         )
-        repo_clone_url = URI.parse(repo.clone_url)
-        repo_clone_url.user = gh_client.login
-        repo_clone_url.password = gh_client.access_token
-        `git init && git add . && git commit -m "Auto-generated site for #{@data[:country_name]}"`
-        `git remote add github #{repo_clone_url}`
-        `git push --quiet github master:gh-pages`
+        File.open(File.join(dir, '_config.yml'), 'w') do |f|
+          f.puts(config_yml)
+        end
+        template = Tilt.new(File.join(templates_dir, 'area.html.erb'))
+        @data[:areas].each do |area|
+          File.open(File.join(dir, '_areas', "#{area[:list_slug]}.html"), 'w') do |f|
+            f.puts(template.render(self, area))
+          end
+        end
+
+        `git add . && git commit -m "Automated commit for #{@data[:country_name]}"`
+        `git push --quiet origin gh-pages`
       end
     end
+  end
+
+  def create_or_update_repo(dir)
+    repo_name = @data[:base_url].gsub('/', '')
+    begin
+      repo = gh_client.repository("seepoliticianstweet/#{repo_name}")
+      `git clone --quiet #{clone_url(repo)} .`
+    rescue Octokit::NotFound
+      # Repository doesn't exist yet
+      repo = gh_client.create_repository(
+        repo_name,
+        organization: 'seepoliticianstweet',
+        homepage: "https://seepoliticianstweet.github.io/#{repo_name}"
+      )
+      `git init`
+      `git symbolic-ref HEAD refs/heads/gh-pages`
+      `git remote add origin #{clone_url(repo)}`
+    end
+
+    # Update files in repo
+    FileUtils.cp_r(File.expand_path(File.join('..', 'jekyll', 'repo'), __FILE__) + '/.', dir)
+  end
+
+  def clone_url(repo)
+    repo_clone_url = URI.parse(repo.clone_url)
+    repo_clone_url.user = gh_client.login
+    repo_clone_url.password = gh_client.access_token
+    repo_clone_url
   end
 
   def gh_client
