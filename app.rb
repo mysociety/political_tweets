@@ -134,8 +134,8 @@ class FetchDataJob
   def self.perform(token_id)
     token = DB[:tokens].first(id: token_id)
     client = Twitter::REST::Client.new do |config|
-      config.consumer_key        = ENV['TWITTER_KEY']
-      config.consumer_secret     = ENV['TWITTER_SECRET']
+      config.consumer_key        = ENV['TWITTER_CONSUMER_KEY']
+      config.consumer_secret     = ENV['TWITTER_CONSUMER_SECRET']
       config.access_token        = token[:token]
       config.access_token_secret = token[:secret]
     end
@@ -178,7 +178,7 @@ configure do
 end
 
 use OmniAuth::Builder do
-  provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+  provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
 end
 
 # Step 1 - Select a country
