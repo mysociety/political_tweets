@@ -1,17 +1,12 @@
-require 'sinatra'
-require 'tilt'
+require 'bundler'
+
+Bundler.require
+
 require 'tilt/erb'
-require 'omniauth-twitter'
-require 'sequel'
 require 'open-uri'
 require 'json'
-require 'resque'
 require 'csv'
-require 'twitter'
-require 'octokit'
-require 'rack/flash'
 
-require 'dotenv'
 Dotenv.load
 
 # Get a list of countries in EveryPolitician

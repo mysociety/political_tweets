@@ -13,4 +13,4 @@ gem 'twitter'
 gem 'rack-test', group: :test
 gem 'puma'
 gem 'octokit'
-gem 'rack-flash3'
+gem 'rack-flash3', require: 'rack/flash'
