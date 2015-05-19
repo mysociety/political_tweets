@@ -109,7 +109,10 @@ class JekyllSiteGenerator
           end
         end
 
-        `git add . && git commit -m "Automated commit for #{@data[:country_name]}"`
+        `git add .`
+        author = "#{gh_client.login} <#{gh_client.emails.first[:email]}>"
+        message = "Automated commit for #{@data[:country_name]}"
+        `git commit --author="#{author}" --message="#{message}"`
         `git push --quiet origin gh-pages`
       end
     end
