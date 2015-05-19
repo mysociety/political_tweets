@@ -155,16 +155,16 @@ end
 class FetchDataJob
   @queue = :default
 
-  def self.perform(token_id)
-    token = DB[:tokens].first(id: token_id)
+  def self.perform(user_id)
+    user = DB[:users].first(id: user_id)
     client = Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV['TWITTER_CONSUMER_KEY']
       config.consumer_secret     = ENV['TWITTER_CONSUMER_SECRET']
-      config.access_token        = token[:token]
-      config.access_token_secret = token[:secret]
+      config.access_token        = user[:token]
+      config.access_token_secret = user[:secret]
     end
 
-    country = countries[token[:country]]
+    country = countries[user[:country]]
     csv = get_csv_for_country(country)
     areas = parse_areas_from_csv(csv)
     areas = create_lists_for_areas(areas, client)
@@ -181,8 +181,8 @@ class FetchDataJob
 
     # Generate the static site
     data = {
-      base_url: token[:country],
-      country_name: countries[token[:country]][:name],
+      base_url: user[:country],
+      country_name: countries[user[:country]][:name],
       list_owner_screen_name: client.user.screen_name,
       areas: areas
     }
@@ -219,23 +219,23 @@ end
 # Step 2 Sign in with Twitter
 get '/auth/:name/callback' do
   auth = request.env['omniauth.auth']
-  tokens = DB[:tokens]
-  token_id = tokens.insert(
-    uid: auth[:uid],
+  users = DB[:users]
+  user_id = users.insert(
+    twitter_uid: auth[:uid],
     token: auth[:credentials][:token],
     secret: auth[:credentials][:secret],
     country: session[:country]
   )
-  session[:token_id] = token_id
+  session[:user_id] = user_id
 
-  Resque.enqueue(FetchDataJob, token_id)
+  Resque.enqueue(FetchDataJob, user_id)
 
   redirect to('/success')
 end
 
 get '/success' do
-  tokens = DB[:tokens]
-  @token = tokens.where(id: session[:token_id]).first
+  users = DB[:users]
+  @user = users.where(id: session[:user_id]).first
   erb :success
 end
 
