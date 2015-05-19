@@ -11,14 +11,19 @@ class AppTest < MiniTest::Unit::TestCase
     Sinatra::Application
   end
 
+  def setup
+    OmniAuth.config.test_mode = true
+  end
+
   def test_the_homepage_works
     get '/'
     assert last_response.ok?
   end
 
   def test_choosing_country
-    post '/choose-country', country: '/wales'
+    get '/auth/twitter'
+    post '/countries', country: '/wales'
     assert last_response.redirect?
-    assert_equal "http://example.org/auth/twitter", last_response.location
+    assert_equal '/countries/1', last_response.location
   end
 end

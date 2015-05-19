@@ -9,6 +9,7 @@ require 'resque'
 require 'csv'
 require 'twitter'
 require 'octokit'
+require 'rack/flash'
 
 require 'dotenv'
 Dotenv.load
@@ -26,6 +27,7 @@ def countries
   countries_list.each do |country|
     countries[country['url']] = {
       name: country['name'],
+      url: country['url'],
       latest_term_csv: country['latest_term_csv']
     }
   end
@@ -155,16 +157,17 @@ end
 class FetchDataJob
   @queue = :default
 
-  def self.perform(user_id)
-    user = DB[:users].first(id: user_id)
+  def self.perform(country_id)
+    country = DB[:countries]
+      .join(:users, :id => :user_id)
+      .first(Sequel.qualify(:countries, :id) => country_id)
     client = Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV['TWITTER_CONSUMER_KEY']
       config.consumer_secret     = ENV['TWITTER_CONSUMER_SECRET']
-      config.access_token        = user[:token]
-      config.access_token_secret = user[:secret]
+      config.access_token        = country[:token]
+      config.access_token_secret = country[:secret]
     end
 
-    country = countries[user[:country]]
     csv = get_csv_for_country(country)
     areas = parse_areas_from_csv(csv)
     areas = create_lists_for_areas(areas, client)
@@ -181,8 +184,8 @@ class FetchDataJob
 
     # Generate the static site
     data = {
-      base_url: user[:country],
-      country_name: countries[user[:country]][:name],
+      base_url: country[:url],
+      country_name: country[:name],
       list_owner_screen_name: client.user.screen_name,
       areas: areas
     }
@@ -205,41 +208,75 @@ use OmniAuth::Builder do
   provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
 end
 
-# Step 1 - Select a country
-get '/' do
-  erb :index
+use Rack::Flash
+
+helpers do
+  def current_user
+    @current_user ||= DB[:users].first(id: session[:user_id])
+  end
 end
 
-# Step 1b - Save country to session and redirect to Twitter OAuth
-post '/choose-country' do
-  session[:country] = params[:country]
-  redirect to('/auth/twitter')
+# Step 1 - Select a country
+get '/' do
+  if current_user
+    @countries = DB[:countries].where(user_id: session[:user_id])
+  end
+  erb :index
 end
 
 # Step 2 Sign in with Twitter
 get '/auth/:name/callback' do
   auth = request.env['omniauth.auth']
+  p auth
   users = DB[:users]
-  user_id = users.insert(
-    twitter_uid: auth[:uid],
-    token: auth[:credentials][:token],
-    secret: auth[:credentials][:secret],
-    country: session[:country]
-  )
-  session[:user_id] = user_id
-
-  Resque.enqueue(FetchDataJob, user_id)
-
-  redirect to('/success')
-end
-
-get '/success' do
-  users = DB[:users]
-  @user = users.where(id: session[:user_id]).first
-  erb :success
+  user = users.first(twitter_uid: auth[:uid])
+  if user
+    session[:user_id] = user[:id]
+  else
+    session[:user_id] = users.insert(
+      twitter_uid: auth[:uid],
+      token: auth[:credentials][:token],
+      secret: auth[:credentials][:secret]
+    )
+  end
+  flash[:notice] = "You have successfully logged in with Twitter"
+  redirect to('/')
 end
 
 get '/logout' do
   session.clear
+  flash[:notice] = "You have been logged out"
+  redirect to('/')
+end
+
+before '/countries*' do
+  redirect to('/auth/twitter') if current_user.nil?
+end
+
+get '/countries/new' do
+  erb :country_new
+end
+
+post '/countries' do
+  country = countries[params[:country]]
+  country_id = DB[:countries].insert(
+    name: country[:name],
+    url: country[:url],
+    latest_term_csv: country[:latest_term_csv],
+    user_id: current_user[:id]
+  )
+  Resque.enqueue(FetchDataJob, country_id)
+  flash[:notice] = "See Politicians Tweet app is being build for this country"
+  redirect to("/countries/#{country_id}")
+end
+
+get '/countries/:id' do
+  @country = DB[:countries].first(id: params[:id])
+  erb :country
+end
+
+post '/countries/:id/rebuild' do
+  Resque.enqueue(FetchDataJob, params[:id])
+  flash[:notice] = "Your rebuild request has been queued"
   redirect to('/')
 end
