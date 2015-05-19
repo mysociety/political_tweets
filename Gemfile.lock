@@ -3,6 +3,7 @@ GEM
   specs:
     addressable (2.3.8)
     buftok (0.2.0)
+    database_cleaner (1.4.1)
     dotenv (2.0.1)
     equalizer (0.0.11)
     faraday (0.9.1)
@@ -80,6 +81,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  database_cleaner
   dotenv
   octokit
   omniauth

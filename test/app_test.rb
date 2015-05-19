@@ -1,29 +1,38 @@
-ENV['RACK_ENV'] = 'test'
+require 'test_helper'
 
-require 'minitest/autorun'
-require 'rack/test'
-require_relative '../app'
-
-class AppTest < MiniTest::Unit::TestCase
+class AppTest < Minitest::Spec
   include Rack::Test::Methods
 
   def app
-    Sinatra::Application
+    SeePoliticiansTweet::App
   end
 
-  def setup
-    OmniAuth.config.test_mode = true
+  before :each do
+    DatabaseCleaner.start
   end
 
-  def test_the_homepage_works
+  after :each do
+    DatabaseCleaner.clean
+  end
+
+  it "has a homepage" do
     get '/'
     assert last_response.ok?
   end
 
-  def test_choosing_country
-    get '/auth/twitter'
-    post '/countries', country: '/wales'
-    assert last_response.redirect?
-    assert_equal '/countries/1', last_response.location
+  describe "creating countries" do
+    before :each do
+      @user_id = app.database[:users].insert(
+        twitter_uid: '123',
+        token: 'TK',
+        secret: 'SK'
+      )
+    end
+
+    it "lets you choose a country" do
+      post '/countries', {country: '/wales'}, {'rack.session' => {user_id: @user_id}}
+      assert last_response.redirect?
+      assert_equal 'http://example.org/countries/1', last_response.location
+    end
   end
 end
