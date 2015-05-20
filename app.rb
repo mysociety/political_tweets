@@ -77,13 +77,13 @@ module SeePoliticiansTweet
           secret: auth[:credentials][:secret]
         )
       end
-      flash[:notice] = "You have successfully logged in with Twitter"
+      flash[:notice] = 'You have successfully logged in with Twitter'
       redirect to('/')
     end
 
     get '/logout' do
       session.clear
-      flash[:notice] = "You have been logged out"
+      flash[:notice] = 'You have been logged out'
       redirect to('/')
     end
 
@@ -104,7 +104,7 @@ module SeePoliticiansTweet
         user_id: current_user[:id]
       )
       Resque.enqueue(FetchDataJob, country_id)
-      flash[:notice] = "See Politicians Tweet app is being built for this country"
+      flash[:notice] = 'Your See Politicians Tweet app is being built'
       redirect to("/countries/#{country_id}")
     end
 
@@ -115,7 +115,7 @@ module SeePoliticiansTweet
 
     post '/countries/:id/rebuild' do
       Resque.enqueue(FetchDataJob, params[:id])
-      flash[:notice] = "Your rebuild request has been queued"
+      flash[:notice] = 'Your rebuild request has been queued'
       redirect to('/')
     end
   end
