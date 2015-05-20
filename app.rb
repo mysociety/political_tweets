@@ -22,7 +22,7 @@ module SeePoliticiansTweet
       Resque.redis = ENV['REDISTOGO_URL']
 
       # Get a list of countries in EveryPolitician
-      if environment == :production
+      if production?
         countries_json = open('http://data.everypolitician.org/countries.json').read
       else
         countries_json = open('data/countries.json').read
