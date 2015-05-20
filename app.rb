@@ -12,7 +12,7 @@ require 'json'
 require 'jobs'
 
 module SeePoliticiansTweet
-  class App < Sinatra::Application
+  class App < Sinatra::Base
     configure do
       set :database, Sequel.connect(ENV['DATABASE_URL'], encoding: 'utf-8')
 
