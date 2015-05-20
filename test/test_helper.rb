@@ -3,6 +3,7 @@ ENV['DATABASE_URL'] = 'sqlite://db/test.sqlite'
 
 require 'minitest/autorun'
 require 'rack/test'
+require 'webmock/minitest'
 
 require_relative '../app'
 

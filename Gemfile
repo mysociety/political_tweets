@@ -17,4 +17,5 @@ gem 'rack-flash3', require: 'rack/flash'
 group :test do
   gem 'rack-test'
   gem 'database_cleaner'
+  gem 'webmock'
 end
