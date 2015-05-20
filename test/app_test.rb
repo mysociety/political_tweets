@@ -1,20 +1,6 @@
 require 'test_helper'
 
 class AppTest < Minitest::Spec
-  include Rack::Test::Methods
-
-  def app
-    SeePoliticiansTweet::App
-  end
-
-  before :each do
-    DatabaseCleaner.start
-  end
-
-  after :each do
-    DatabaseCleaner.clean
-  end
-
   it "has a homepage" do
     get '/'
     assert last_response.ok?
@@ -23,14 +9,19 @@ class AppTest < Minitest::Spec
   describe "creating countries" do
     before :each do
       @user_id = app.database[:users].insert(
-        twitter_uid: '123',
-        token: 'TK',
-        secret: 'SK'
+        twitter_uid: '1',
+        token: 'twitter-token',
+        secret: 'twitter-secret'
       )
+      app.set :countries, '/test-country' => {
+        name: 'Test Country',
+        url: '/test-country',
+        latest_term_csv: '/test-country.csv'
+      }
     end
 
     it "lets you choose a country" do
-      post '/countries', {country: '/wales'}, {'rack.session' => {user_id: @user_id}}
+      post '/countries', {country: '/test-country'}, {'rack.session' => {user_id: @user_id}}
       assert last_response.redirect?
       assert_equal 'http://example.org/countries/1', last_response.location
     end

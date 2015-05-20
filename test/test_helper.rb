@@ -8,7 +8,6 @@ require_relative '../app'
 
 require 'database_cleaner'
 
-
 DatabaseCleaner.strategy = :transaction
 
 # We don't want to run resque jobs
@@ -20,3 +19,19 @@ end
 Sequel.extension :migration
 db = SeePoliticiansTweet::App.database
 Sequel::Migrator.run(db, "db/migrations")
+
+class Minitest::Spec
+  include Rack::Test::Methods
+
+  def app
+    SeePoliticiansTweet::App
+  end
+
+  before :each do
+    DatabaseCleaner.start
+  end
+
+  after :each do
+    DatabaseCleaner.clean
+  end
+end
