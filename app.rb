@@ -1,7 +1,7 @@
 require 'bundler'
 
 Bundler.require
-Dotenv.load
+Dotenv.load(".env.#{Sinatra::Base.environment}", '.env')
 
 $LOAD_PATH << File.expand_path('../lib', __FILE__)
 
