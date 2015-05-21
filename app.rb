@@ -118,5 +118,17 @@ module SeePoliticiansTweet
       flash[:notice] = 'Your rebuild request has been queued'
       redirect to('/')
     end
+
+    post '/submissions' do
+      submission_id = database[:submissions].insert(params[:submission])
+      flash[:notice] = 'Your update has been submitted for approval'
+      redirect to("/submissions/#{submission_id}")
+    end
+
+    get '/submissions/:id' do
+      @submission = database[:submissions].first(id: params[:id])
+      @country = database[:countries].first(id: @submission[:country_id])
+      erb :submission
+    end
   end
 end
