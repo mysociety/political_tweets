@@ -1,0 +1,54 @@
+.button {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0.6em 0.8em;
+  background-color: transparent;
+  color: inherit;
+  border: none;
+  font-size: 0.9em;
+  line-height: 1em;
+  font-family: inherit;
+  text-decoration: none;
+  outline: none;
+
+  @include box-shadow(inset 0px 0px 0px 1px currentColor);
+
+  &:hover,
+  &:focus {
+    text-decoration: underline;
+  }
+
+  &:active {
+    position: relative;
+    top: 1px;
+  }
+}
+
+.button--primary {
+  background-color: $color-blue-500;
+  color: #fff;
+
+  @include box-shadow(none);
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    background-color: $color-blue-700;
+  }
+}
+
+.button--secondary {
+  background-color: $color-bluegrey-100;
+
+  @include box-shadow(none);
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    background-color: $color-bluegrey-200;
+  }
+}
+
+.button--small {
+  font-size: 0.7em;
+}

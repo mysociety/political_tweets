@@ -1,10 +1,24 @@
-<h2><%= @country[:name] %></h2>
-<% unless @country[:github] %>
-  <p>We are generating a site for <%= @country[:name] %>. It will shortly be available at https://<%= settings.github_organization %>.github.io<%= @country[:url] %></p>
-<% end %>
-
-<p><a href="https://<%= settings.github_organization %>.github.io<%= @country[:url] %>">https://<%= settings.github_organization %>.github.io<%= @country[:url] %></a></p>
-
-<form action="<%= url "/countries/#{@country[:id]}/rebuild" %>" method="post">
-  <button>Force rebuild</button>
-</form>
+<div class="country country--<% if country[:github] %>active<% else %>building<% end %>">
+  <% if country[:github] %>
+    <span class="country__status">Active</span>
+    <h2 class="country__name">
+        <%= country[:name] %>
+    </h2>
+    <p class="country__url">
+        <a href="https://<%= settings.github_organization %>.github.io<%= country[:url] %>">
+            https://<%= settings.github_organization %>.github.io<%= country[:url] %>
+        </a>
+    </p>
+  <% else %>
+    <span class="country__status">Building</span>
+    <h2 class="country__name">
+        <%= country[:name] %>
+    </h2>
+    <p class="country__url">
+        https://<%= settings.github_organization %>.github.io<%= country[:url] %>
+    </p>
+  <% end %>
+    <form class="country__rebuild" action="<%= url "/countries/#{country[:id]}/rebuild" %>" method="post">
+        <button class="button button--secondary button--small" type="submit">Force rebuild</button>
+    </form>
+</div>

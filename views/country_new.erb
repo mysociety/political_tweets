@@ -1,21 +1,2 @@
 <h1>Create a new country</h1>
-
-<form action="<%= url('/countries') %>" method="post">
-  <p>Please select a country:</p>
-  <select name="country">
-    <option>Select a country</option>
-    <option disabled>---</option>
-    <% settings.countries.each do |url, country| %>
-      <option value="<%= url %>"><%= country[:name] %></option>
-    <% end %>
-  </select>
-
-  <select name="grouping">
-    <option>Select a grouping</option>
-    <option disabled>---</option>
-    <option value="group">Group</option>
-    <option value="area">Area</option>
-  </select>
-
-  <input type="submit" value="Create">
-</form>
+<%= erb :new_country_form %>
