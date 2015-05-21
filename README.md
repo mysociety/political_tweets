@@ -38,6 +38,14 @@ First you'll need to [create a Twitter application](https://apps.twitter.com). O
 
 Next you'll need to generate a [Personal access token](https://github.com/settings/tokens) on GitHub. The token will need `public_repo` and `user` scoped ticked. Again, once generated add it to the `.env` file.
 
+## Seed data
+
+If you'd like some seed data to work with first sign in with Twitter to create a user account, then run the following:
+
+    ruby db/seeds.rb
+
+That will create some countries associated with your user account.
+
 ## Usage
 
 The application is made up of a Sinatra app and Resque background workers. In order to run all of these at once first install [Foreman](https://github.com/ddollar/foreman#installation) and then run:
