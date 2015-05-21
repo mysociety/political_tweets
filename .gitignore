@@ -2,3 +2,4 @@
 db/*.sqlite
 .bundle/
 .vagrant/
+.sass-cache/

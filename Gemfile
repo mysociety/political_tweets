@@ -13,6 +13,7 @@ gem 'twitter'
 gem 'puma'
 gem 'octokit'
 gem 'rack-flash3', require: 'rack/flash'
+gem 'sass'
 
 group :test do
   gem 'rack-test'

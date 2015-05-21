@@ -56,6 +56,10 @@ module SeePoliticiansTweet
       end
     end
 
+    get '/*.css' do |filename|
+      scss :"sass/#{filename}"
+    end
+
     get '/' do
       if current_user
         @countries = database[:countries].where(user_id: session[:user_id])
