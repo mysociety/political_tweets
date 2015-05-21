@@ -28,11 +28,13 @@ layout: default
 
         {% for politician in page.politicians %}
         {% unless politician.screen_name %}
-        <form class="person">
+        <form class="person" action="{{ site.submission_url }}" method="post">
+            <input type="hidden" name="submission[country_id]" value="{{ site.country_id }}">
+            <input type="hidden" name="submission[person_id]" value="{{ politician.id }}">
             <h3>{{ politician.name }}</h3>
             <p>
-                <label for="id_username_123">Add this person’s Twitter username:</label>
-                <input id="id_username_123" class="form-control" type="text" placeholder="@username">
+                <label for="id_username_{{ politician.id }}">Add this person’s Twitter username:</label>
+                <input id="id_username_{{ politician.id }}" class="form-control" type="text" name="submission[twitter]" placeholder="@username">
                 <button type="submit" class="button">Save</button>
             </p>
         </form>

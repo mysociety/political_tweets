@@ -50,6 +50,7 @@ class FetchDataJob
       area = areas.find { |a| a[:name] == row['area'] }
       area[:politicians] ||= []
       area[:politicians] << {
+        id: row['id'],
         name: row['name'],
         twitter: row['twitter']
       }

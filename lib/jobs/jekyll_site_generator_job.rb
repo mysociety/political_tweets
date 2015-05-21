@@ -32,9 +32,9 @@ class JekyllSiteGeneratorJob
         template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
         config_yml = template.render(
           self,
-          country_name: country[:name],
+          country: country,
           list_owner_screen_name: @list_owner_screen_name,
-          base_url: country[:url]
+          submission_url: ENV['SUBMISSION_URL']
         )
         File.open(File.join(dir, '_config.yml'), 'w') do |f|
           f.puts(config_yml)

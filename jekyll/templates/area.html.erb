@@ -4,7 +4,8 @@ name: <%= name %>
 list_slug: <%= list_slug %>
 politicians:
 <% politicians.each do |politician| %>
-- name: <%= politician['name'] %>
+- id: <%= politician['id'] %>
+  name: <%= politician['name'] %>
   screen_name: <%= politician['twitter'] %>
 <% end %>
 ---

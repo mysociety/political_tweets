@@ -5,6 +5,8 @@ collections:
     output: true
 
 # Site specific data
-baseurl: <%= base_url %>
-country: <%= country_name %>
+baseurl: <%= country[:url] %>
+country: <%= country[:name] %>
+country_id: <%= country[:id] %>
 list_owner_screen_name: <%= list_owner_screen_name %>
+submission_url: <%= submission_url %>
