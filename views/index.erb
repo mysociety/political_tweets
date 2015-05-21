@@ -15,6 +15,12 @@
     </div>
   <% end %>
 
+  <% if @submissions.any? %>
+    <% @submissions.each do |submission| %>
+        <%= erb :submission, locals: { submission: submission } %>
+    <% end %>
+  <% end %>
+
 <% else %>
 
     <p class="login-prompt">

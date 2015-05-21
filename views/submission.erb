@@ -1,3 +1,11 @@
-<p>You have successfully submitted an update for <%= @country[:name] %>. It now needs to be approved before it's published.</p>
-
-<p>Person: <%= @submission[:person_id] %>, Twitter: <%= @submission[:twitter] %>.</p>
+<div class="country">
+    <h2>New submission for <%= submission[:name] %></h2>
+    <ul>
+        <li>Person: <%= submission[:person_id] %></li>
+        <li>Twitter: <%= submission[:twitter] %></li>
+    </ul>
+    <form action="<%= url "/submissions/#{submission[:id]}/moderate" %>" method="post">
+        <input type="submit" name="action" value="accept">
+        <input type="submit" name="action" value="reject">
+    </form>
+</div>

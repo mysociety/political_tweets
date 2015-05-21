@@ -64,7 +64,8 @@ module SeePoliticiansTweet
 
     get '/' do
       if current_user
-        @countries = database[:countries].where(user_id: session[:user_id])
+        @countries = database[:countries].where(user_id: current_user[:id])
+        @submissions = database[:submissions].join(:countries, id: :country_id).where(countries__user_id: current_user[:id])
       end
       erb :index
     end
@@ -125,7 +126,7 @@ module SeePoliticiansTweet
     get '/submissions/:id' do
       @submission = database[:submissions].first(id: params[:id])
       @country = database[:countries].first(id: @submission[:country_id])
-      erb :submission
+      erb :new_submission
     end
   end
 end
