@@ -39,4 +39,13 @@ class AppTest < Minitest::Spec
       assert last_response.body.include?('barackobama')
     end
   end
+
+  describe Country do
+    it "has an active? method" do
+      country = Country.new
+      assert !country.active?
+      country.github = "foo/bar"
+      assert country.active?
+    end
+  end
 end

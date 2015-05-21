@@ -1,5 +1,5 @@
-<div class="country country--<% if country.github %>active<% else %>building<% end %>">
-  <% if country.github %>
+<div class="country country--<% if country.active? %>active<% else %>building<% end %>">
+  <% if country.active? %>
     <span class="country__status">Active</span>
     <h2 class="country__name">
         <%= country.name %>
