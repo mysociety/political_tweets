@@ -97,10 +97,6 @@ module SeePoliticiansTweet
       redirect to('/auth/twitter') if current_user.nil?
     end
 
-    get '/countries/new' do
-      erb :country_new
-    end
-
     post '/countries' do
       country = settings.countries[params[:country]]
       country_id = database[:countries].insert(
@@ -111,12 +107,7 @@ module SeePoliticiansTweet
       )
       Resque.enqueue(FetchDataJob, country_id)
       flash[:notice] = 'Your See Politicians Tweet app is being built'
-      redirect to("/countries/#{country_id}")
-    end
-
-    get '/countries/:id' do
-      @country = database[:countries].first(id: params[:id])
-      erb :country
+      redirect to('/')
     end
 
     post '/countries/:id/rebuild' do
