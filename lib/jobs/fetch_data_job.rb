@@ -6,8 +6,8 @@ class FetchDataJob
 
   def self.perform(country_id)
     country = SeePoliticiansTweet::App.database[:countries]
-      .join(:users, :id => :user_id)
-      .first(Sequel.qualify(:countries, :id) => country_id)
+      .join(:users, id: :user_id)
+      .first(countries__id: country_id)
     new(country).fetch
   end
 
