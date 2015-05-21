@@ -4,6 +4,7 @@ Bundler.require
 Dotenv.load(".env.#{Sinatra::Base.environment}", '.env')
 
 $LOAD_PATH << File.expand_path('../lib', __FILE__)
+$LOAD_PATH << File.expand_path('../', __FILE__)
 
 require 'tilt/erb'
 require 'tilt/sass'
@@ -11,11 +12,12 @@ require 'open-uri'
 require 'json'
 
 require 'jobs'
+require 'app/models'
 
 module SeePoliticiansTweet
   class App < Sinatra::Base
     configure do
-      set :database, Sequel.connect(ENV['DATABASE_URL'], encoding: 'utf-8')
+      set :database, DB
       set :github_organization, ENV.fetch('GITHUB_ORGANIZATION')
 
       enable :sessions
@@ -49,12 +51,8 @@ module SeePoliticiansTweet
     use Rack::Flash
 
     helpers do
-      def database
-        settings.database
-      end
-
       def current_user
-        @current_user ||= database[:users].first(id: session[:user_id])
+        @current_user ||= User[session[:user_id]]
       end
     end
 
@@ -64,8 +62,8 @@ module SeePoliticiansTweet
 
     get '/' do
       if current_user
-        @countries = database[:countries].where(user_id: current_user[:id])
-        @submissions = database[:submissions].join(:countries, id: :country_id).where(countries__user_id: current_user[:id])
+        @countries = current_user.countries
+        @submissions = Submission.where(country_id: @countries.map(&:id))
       end
       erb :index
     end
@@ -73,12 +71,11 @@ module SeePoliticiansTweet
     get '/auth/:name/callback' do
       auth = request.env['omniauth.auth']
       p auth
-      users = database[:users]
-      user = users.first(twitter_uid: auth[:uid])
+      user = User.first(twitter_uid: auth[:uid])
       if user
-        session[:user_id] = user[:id]
+        session[:user_id] = user.id
       else
-        session[:user_id] = users.insert(
+        session[:user_id] = User.insert(
           twitter_uid: auth[:uid],
           token: auth[:credentials][:token],
           secret: auth[:credentials][:secret]
@@ -100,11 +97,11 @@ module SeePoliticiansTweet
 
     post '/countries' do
       country = settings.countries[params[:country]]
-      country_id = database[:countries].insert(
+      country_id = Country.insert(
         name: country[:name],
         url: country[:url],
         latest_term_csv: country[:latest_term_csv],
-        user_id: current_user[:id]
+        user_id: current_user.id
       )
       Resque.enqueue(FetchDataJob, country_id)
       flash[:notice] = 'Your See Politicians Tweet app is being built'
@@ -118,15 +115,22 @@ module SeePoliticiansTweet
     end
 
     post '/submissions' do
-      submission_id = database[:submissions].insert(params[:submission])
+      submission_id = Submission.insert(params[:submission])
       flash[:notice] = 'Your update has been submitted for approval'
       redirect to("/submissions/#{submission_id}")
     end
 
     get '/submissions/:id' do
-      @submission = database[:submissions].first(id: params[:id])
-      @country = database[:countries].first(id: @submission[:country_id])
+      @submission = Submission[params[:id]]
+      @country = Country[@submission[:country_id]]
       erb :new_submission
+    end
+
+    post '/submissions/:id/moderate' do
+      params[:action]
     end
   end
 end
+
+# Easy access to models from console
+include SeePoliticiansTweet::Models

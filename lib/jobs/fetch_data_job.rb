@@ -5,9 +5,7 @@ class FetchDataJob
   @queue = :default
 
   def self.perform(country_id)
-    country = SeePoliticiansTweet::App.database[:countries]
-      .join(:users, id: :user_id)
-      .first(countries__id: country_id)
+    country = Country[country_id]
     new(country).fetch
   end
 
@@ -25,20 +23,20 @@ class FetchDataJob
     create_all_list
 
     # Generate the static site
-    Resque.enqueue(JekyllSiteGeneratorJob, country[:id], client.user.screen_name, areas)
+    Resque.enqueue(JekyllSiteGeneratorJob, country.id, client.user.screen_name, areas)
   end
 
   def client
     @client ||= Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV['TWITTER_CONSUMER_KEY']
       config.consumer_secret     = ENV['TWITTER_CONSUMER_SECRET']
-      config.access_token        = country[:token]
-      config.access_token_secret = country[:secret]
+      config.access_token        = country.user.token
+      config.access_token_secret = country.user.secret
     end
   end
 
   def get_csv_for_country(country)
-    latest_term_csv = country[:latest_term_csv]
+    latest_term_csv = country.latest_term_csv
     term_csv = open('http://data.everypolitician.org' + latest_term_csv).read
     CSV.parse(term_csv, headers: true)
   end

@@ -2,8 +2,7 @@ class JekyllSiteGeneratorJob
   @queue = :default
 
   def self.perform(country_id, list_owner_screen_name, areas)
-    database = SeePoliticiansTweet::App.database
-    country = database[:countries].first(id: country_id)
+    country = Country[country_id]
     new(country, list_owner_screen_name, areas).generate
   end
 
@@ -48,7 +47,7 @@ class JekyllSiteGeneratorJob
 
         `git add .`
         author = "#{gh_client.login} <#{gh_client.emails.first[:email]}>"
-        message = "Automated commit for #{country[:name]}"
+        message = "Automated commit for #{country.name}"
         `git commit --author="#{author}" --message="#{message}"`
         `git push --quiet origin gh-pages`
       end
@@ -56,12 +55,13 @@ class JekyllSiteGeneratorJob
   end
 
   def create_or_update_repo(dir)
-    repo_name = country[:url].gsub('/', '')
-    if country[:github]
-      github_repository = country[:github]
+    repo_name = country.url.gsub('/', '')
+    if country.github
+      github_repository = country.github
     else
       github_repository = "#{app.github_organization}/#{repo_name}"
-      database[:countries].where(id: country[:id]).update(github: github_repository)
+      country.github = github_repository
+      country.save
     end
     begin
       repo = gh_client.repository(github_repository)
@@ -95,9 +95,5 @@ class JekyllSiteGeneratorJob
 
   def app
     SeePoliticiansTweet::App
-  end
-
-  def database
-    app.database
   end
 end

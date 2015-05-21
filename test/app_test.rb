@@ -23,7 +23,7 @@ class AppTest < Minitest::Spec
     it "lets you choose a country" do
       post '/countries', {country: '/test-country'}, {'rack.session' => {user_id: @user_id}}
       assert last_response.redirect?
-      assert_equal 'http://example.org/countries/1', last_response.location
+      assert_equal 'http://example.org/', last_response.location
     end
   end
 
