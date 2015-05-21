@@ -16,20 +16,27 @@ layout: default
     <div class="site-content__people">
         <h2>Politicians tweeting here:</h2>
         {% for politician in page.politicians %}
-        <div class="person">
-          <h3>{{ politician.name }}</h3>
-          <p><a href="#">@{{ politician.screen_name }}</a></p>
-        </div>
+        {% if politician.screen_name %}
+          <div class="person">
+            <h3>{{ politician.name }}</h3>
+            <p><a href="#">@{{ politician.screen_name }}</a></p>
+          </div>
+        {% endif %}
         {% endfor %}
 
         <h2>Politicians not on Twitter</h2>
+
+        {% for politician in page.politicians %}
+        {% unless politician.screen_name %}
         <form class="person">
-            <h3>Anne Archy (Party 3)</h3>
+            <h3>{{ politician.name }}</h3>
             <p>
                 <label for="id_username_123">Add this person’s Twitter username:</label>
                 <input id="id_username_123" class="form-control" type="text" placeholder="@username">
                 <button type="submit" class="button">Save</button>
             </p>
         </form>
+        {% endunless %}
+        {% endfor %}
     </div>
 </div>
