@@ -1,13 +1,25 @@
-<h1>Political tweets</h1>
-
 <% if current_user %>
-  <p><a href="<%= url '/countries/new' %>">Create a new country</a></p>
 
-  <ul>
-  <% @countries.each do |country| %>
-    <li><a href="<%= url "/countries/#{country[:id]}" %>"><%= country[:name] %></a></li>
+  <% if @countries.any? %>
+      <% @countries.each do |country| %>
+        <%= erb :country, locals: { country: country } %>
+      <% end %>
+    <div class="country country--new">
+        <h2>Create a new country</h2>
+        <%= erb :new_country_form %>
+    </div>
+  <% else %>
+    <div class="country country--new">
+        <h2>Create your first country</h2>
+        <%= erb :new_country_form %>
+    </div>
   <% end %>
-  </ul>
+
 <% else %>
-  <p><a href="<%= url '/auth/twitter' %>">Log in with Twitter</a> to create your first country.</p>
+
+    <p class="login-prompt">
+        <a href="<%= url '/auth/twitter' %>">Log in with Twitter</a>
+        to create your first country.
+    </p>
+
 <% end %>

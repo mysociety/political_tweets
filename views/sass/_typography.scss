@@ -1,0 +1,10 @@
+a {
+  color: $color-blue-600;
+
+  &:hover,
+  &:focus {
+    color: $color-blue-800;
+    text-decoration: none;
+    outline: none;
+  }
+}

@@ -1,0 +1,19 @@
+<form action="<%= url('/countries') %>" method="post">
+    <label for="id_country">Create a site for:</label>
+    <select name="country" id="id_country">
+        <option disabled selected></option>
+        <optgroup label="EveryPolitician.org">
+          <% settings.countries.each do |url, country| %>
+            <option value="<%= url %>"><%= country[:name] %></option>
+          <% end %>
+        </optgroup>
+    </select>
+
+    <label for="id_grouping">Group by:</label>
+    <select name="grouping" id="id_grouping">
+        <option value="area" selected>Area</option>
+        <option value="group" disabled>Group</option>
+    </select>
+
+    <button class="button button--primary" type="submit">Create</button>
+</form>

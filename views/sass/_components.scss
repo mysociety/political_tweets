@@ -1,0 +1,103 @@
+.country {
+  display: block;
+  background: #fff;
+  padding: 1.5em;
+  @include box-shadow(0 1px 3px rgba(0,0,0,0.2));
+  margin-top: 1.5em;
+}
+
+.country--active {
+  border-right: 5px solid $color-green-500;
+
+  .country__status {
+    color: $color-green-500;
+  }
+}
+
+.country--building {
+  border-right: 5px solid $color-orange-600;
+
+  .country__status {
+    color: $color-orange-600;
+  }
+}
+
+.country--new {
+  border-right: 5px solid $color-blue-500;
+}
+
+.country__name {
+  margin-top: 0;
+  margin-bottom: 0.5em;
+}
+
+.country__status {
+  float: right;
+}
+
+.country__rebuild {
+  margin-top: 0.8em;
+}
+
+.country__url {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0;
+  color: $color-bluegrey-300;
+}
+
+.country--new {
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+  }
+
+  label {
+    font-size: 0.9em;
+  }
+
+  select {
+    margin: 0 1em 0 0.2em;
+  }
+
+  .button {
+    @media (min-width: 40em) {
+      float: right;
+      margin-top: -0.3em;
+    }
+  }
+}
+
+.user-bar {
+  padding: 1em 0;
+  border-bottom: 1px solid $color-bluegrey-100;
+
+  @include clearfix();
+
+  h1 {
+    float: left;
+    font-size: inherit;
+    margin: 0;
+  }
+
+  a {
+    float: right;
+  }
+}
+
+.flash {
+  padding: 1em;
+  margin: 1em 0;
+  background-color: $color-orange-50;
+  color: mix(#000, $color-orange-900, 30%);
+  @include box-shadow(0 1px 3px rgba(0,0,0,0.2));
+}
+
+.login-prompt {
+  padding: 2em;
+  margin-top: 1.5em;
+  border-radius: 3px;
+  border: 2px dashed $color-bluegrey-100;
+  text-align: center;
+}
