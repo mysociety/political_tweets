@@ -122,12 +122,13 @@ module SeePoliticiansTweet
 
     get '/submissions/:id' do
       @submission = Submission[params[:id]]
-      @country = Country[@submission[:country_id]]
       erb :new_submission
     end
 
     post '/submissions/:id/moderate' do
-      params[:action]
+      if params[:action] == 'accept'
+        Resque.enqueue(AcceptSubmissionJob, params[:id])
+      end
     end
   end
 end
