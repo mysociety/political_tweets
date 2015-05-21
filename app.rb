@@ -15,6 +15,7 @@ module SeePoliticiansTweet
   class App < Sinatra::Base
     configure do
       set :database, Sequel.connect(ENV['DATABASE_URL'], encoding: 'utf-8')
+      set :github_organization, ENV.fetch('GITHUB_ORGANIZATION')
 
       enable :sessions
       set :session_secret, ENV.fetch('SESSION_SECRET')

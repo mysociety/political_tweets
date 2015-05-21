@@ -1,1 +1,8 @@
-<p>We are generating a site for <%= @country[:name] %>. It will shortly be available at https://seepoliticianstweet.github.io<%= @country[:url] %></p>
+<% unless @country[:github] %>
+  <p>We are generating a site for <%= @country[:name] %>. It will shortly be available at https://<%= settings.github_organization %>.github.io<%= @country[:url] %></p>
+<% end %>
+
+
+<form action="<%= url "/countries/#{@country[:id]}/rebuild" %>" method="post">
+  <button>Manual rebuild</button>
+</form>

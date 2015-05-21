@@ -3,16 +3,11 @@
 <% if current_user %>
   <p><a href="<%= url '/countries/new' %>">Create a new country</a></p>
 
+  <ul>
   <% @countries.each do |country| %>
-    <p>
-      <%= country[:name] %>
-      <small>
-        <form action="<%= url "/countries/#{country[:id]}/rebuild" %>" method="post">
-          <button>rebuild</button>
-        </form>
-      </small>
-    </p>
+    <li><a href="<%= url "/countries/#{country[:id]}" %>"><%= country[:name] %></a></li>
   <% end %>
+  </ul>
 <% else %>
   <p><a href="<%= url '/auth/twitter' %>">Log in with Twitter</a> to create your first country.</p>
 <% end %>

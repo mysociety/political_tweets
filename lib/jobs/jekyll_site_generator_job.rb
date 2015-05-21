@@ -57,15 +57,21 @@ class JekyllSiteGeneratorJob
 
   def create_or_update_repo(dir)
     repo_name = country[:url].gsub('/', '')
+    if country[:github]
+      github_repository = country[:github]
+    else
+      github_repository = "#{app.github_organization}/#{repo_name}"
+      database[:countries].where(id: country[:id]).update(github: github_repository)
+    end
     begin
-      repo = gh_client.repository("seepoliticianstweet/#{repo_name}")
+      repo = gh_client.repository(github_repository)
       `git clone --quiet #{clone_url(repo)} .`
     rescue Octokit::NotFound
       # Repository doesn't exist yet
       repo = gh_client.create_repository(
         repo_name,
-        organization: 'seepoliticianstweet',
-        homepage: "https://seepoliticianstweet.github.io/#{repo_name}"
+        organization: app.github_organization,
+        homepage: "https://#{app.github_organization}.github.io/#{repo_name}"
       )
       `git init`
       `git symbolic-ref HEAD refs/heads/gh-pages`
@@ -85,5 +91,13 @@ class JekyllSiteGeneratorJob
 
   def gh_client
     @gh_client ||= Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
+  end
+
+  def app
+    SeePoliticiansTweet::App
+  end
+
+  def database
+    app.database
   end
 end
