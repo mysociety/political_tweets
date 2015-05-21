@@ -6,6 +6,7 @@ Dotenv.load(".env.#{Sinatra::Base.environment}", '.env')
 $LOAD_PATH << File.expand_path('../lib', __FILE__)
 
 require 'tilt/erb'
+require 'tilt/sass'
 require 'open-uri'
 require 'json'
 
