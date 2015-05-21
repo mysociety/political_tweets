@@ -1,8 +1,10 @@
+<h2><%= @country[:name] %></h2>
 <% unless @country[:github] %>
   <p>We are generating a site for <%= @country[:name] %>. It will shortly be available at https://<%= settings.github_organization %>.github.io<%= @country[:url] %></p>
 <% end %>
 
+<p><a href="https://<%= settings.github_organization %>.github.io<%= @country[:url] %>">https://<%= settings.github_organization %>.github.io<%= @country[:url] %></a></p>
 
 <form action="<%= url "/countries/#{@country[:id]}/rebuild" %>" method="post">
-  <button>Manual rebuild</button>
+  <button>Force rebuild</button>
 </form>
