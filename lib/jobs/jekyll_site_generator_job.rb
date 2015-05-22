@@ -1,4 +1,8 @@
+require 'github'
+
 class JekyllSiteGeneratorJob
+  include Github
+
   @queue = :default
 
   def self.perform(country_id, list_owner_screen_name, areas)
@@ -46,32 +50,33 @@ class JekyllSiteGeneratorJob
         end
 
         `git add .`
-        author = "#{gh_client.login} <#{gh_client.emails.first[:email]}>"
+        git_config = "-c user.name='#{github_client.login}' -c user.email='#{github_client.emails.first[:email]}'"
         message = "Automated commit for #{country.name}"
-        `git commit --author="#{author}" --message="#{message}"`
+        `git #{git_config} commit --message="#{message}"`
         `git push --quiet origin gh-pages`
       end
     end
   end
 
   def create_or_update_repo(dir)
+    org = SeePoliticiansTweet::App.github_organization
     repo_name = country.url.gsub('/', '')
     if country.github
       github_repository = country.github
     else
-      github_repository = "#{app.github_organization}/#{repo_name}"
+      github_repository = "#{org}/#{repo_name}"
       country.github = github_repository
       country.save
     end
     begin
-      repo = gh_client.repository(github_repository)
+      repo = github_client.repository(github_repository)
       `git clone --quiet #{clone_url(repo)} .`
     rescue Octokit::NotFound
       # Repository doesn't exist yet
-      repo = gh_client.create_repository(
+      repo = github_client.create_repository(
         repo_name,
-        organization: app.github_organization,
-        homepage: "https://#{app.github_organization}.github.io/#{repo_name}"
+        organization: org,
+        homepage: "https://#{org}.github.io/#{repo_name}"
       )
       `git init`
       `git symbolic-ref HEAD refs/heads/gh-pages`
@@ -80,20 +85,5 @@ class JekyllSiteGeneratorJob
 
     # Update files in repo
     FileUtils.cp_r(repo_dir + '/.', dir)
-  end
-
-  def clone_url(repo)
-    repo_clone_url = URI.parse(repo.clone_url)
-    repo_clone_url.user = gh_client.login
-    repo_clone_url.password = gh_client.access_token
-    repo_clone_url
-  end
-
-  def gh_client
-    @gh_client ||= Octokit::Client.new(access_token: ENV['GITHUB_ACCESS_TOKEN'])
-  end
-
-  def app
-    SeePoliticiansTweet::App
   end
 end
