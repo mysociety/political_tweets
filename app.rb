@@ -54,6 +54,13 @@ module SeePoliticiansTweet
       def current_user
         @current_user ||= User[session[:user_id]]
       end
+
+      # Taken from https://developer.github.com/webhooks/securing/
+      def verify_signature(payload_body)
+        digest = OpenSSL::Digest.new('sha1')
+        signature = 'sha1=' + OpenSSL::HMAC.hexdigest(digest, ENV['GITHUB_WEBHOOK_SECRET'], payload_body)
+        return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(signature, request.env['HTTP_X_HUB_SIGNATURE'])
+      end
     end
 
     get '/*.css' do |filename|
@@ -129,6 +136,22 @@ module SeePoliticiansTweet
       if params[:action] == 'accept'
         Resque.enqueue(AcceptSubmissionJob, params[:id])
       end
+    end
+
+    post '/github_events' do
+      request.body.rewind
+      payload_body = request.body.read
+      verify_signature(payload_body)
+      pull_request = JSON.parse(payload_body)
+      action = pull_request['action']
+      user = pull_request['pull_request']['user']['login']
+      # TODO: Better verification of sender
+      if action == 'opened' && user == 'seepoliticianstweetbot'
+        repo = pull_request['repository']['full_name']
+        number = pull_request['number']
+        Resque.enqueue(MergeJob, repo, number)
+      end
+      "OK"
     end
   end
 end
