@@ -27,7 +27,7 @@ class AcceptSubmissionJob
         repo = client.repository(github_repository)
         `git clone --depth=1 --quiet #{clone_url(repo)} .`
         branch_name = "#{country_name.downcase}-#{DateTime.now.strftime('%Y%m%d%H%M%S')}"
-        `git checkout -b #{branch_name}`
+        `git checkout -q -b #{branch_name}`
         File.open(csv_path, 'w') do |f|
           f.puts csv
         end
