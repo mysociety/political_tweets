@@ -151,7 +151,7 @@ module SeePoliticiansTweet
         number = pull_request['number']
         Resque.enqueue(MergeJob, repo, number)
       end
-      "OK"
+      'OK'
     end
   end
 end

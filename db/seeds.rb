@@ -1,6 +1,6 @@
 require_relative '../app'
 
-$stderr.puts "Loading database seeds"
+$stderr.puts 'Loading database seeds'
 
 database = SeePoliticiansTweet::App.database
 

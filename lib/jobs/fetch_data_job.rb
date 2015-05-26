@@ -43,7 +43,7 @@ class FetchDataJob
 
   def parse_areas_from_csv(csv)
     areas = csv.map { |r| r['area'] }.compact.uniq
-    areas = areas.map { |a| {name: a} }
+    areas = areas.map { |a| { name: a } }
     csv.each do |row|
       area = areas.find { |a| a[:name] == row['area'] }
       area[:politicians] ||= []
@@ -67,7 +67,7 @@ class FetchDataJob
 
       list = all_lists.find { |list| list.name == name }
 
-      if !list
+      unless list
         list = client.create_list(name)
       end
 
@@ -84,7 +84,7 @@ class FetchDataJob
   def create_all_list
     # Create a list with all members in
     all_list = client.lists.find { |list| list.name == 'All' }
-    if !all_list
+    unless all_list
       all_list = client.create_list('All')
     end
     all_twitter_handles = csv.map do|row|

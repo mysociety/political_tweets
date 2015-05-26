@@ -14,23 +14,23 @@ class AppTest < Minitest::Spec
     }
   end
 
-  it "has a homepage" do
+  it 'has a homepage' do
     get '/'
     assert last_response.ok?
   end
 
-  describe "creating countries" do
-    it "lets you choose a country" do
-      post '/countries', {country: '/test-country'}, {'rack.session' => {user_id: @user_id}}
+  describe 'creating countries' do
+    it 'lets you choose a country' do
+      post '/countries', { country: '/test-country' }, 'rack.session' => { user_id: @user_id }
       assert last_response.redirect?
       assert_equal 'http://example.org/', last_response.location
     end
   end
 
-  describe "posting updates" do
-    it "creates a new submission entry" do
+  describe 'posting updates' do
+    it 'creates a new submission entry' do
       country_id = app.database[:countries].insert(app.countries['/test-country'].dup.merge(user_id: @user_id))
-      post "/submissions", submission: { country_id: country_id, person_id: 42, twitter: 'barackobama' }
+      post '/submissions', submission: { country_id: country_id, person_id: 42, twitter: 'barackobama' }
       assert last_response.redirect?
       assert_equal 'http://example.org/submissions/1', last_response.location
       get last_response.location
@@ -41,10 +41,10 @@ class AppTest < Minitest::Spec
   end
 
   describe Country do
-    it "has an active? method" do
+    it 'has an active? method' do
       country = Country.new
       assert !country.active?
-      country.github = "foo/bar"
+      country.github = 'foo/bar'
       assert country.active?
     end
   end

@@ -12,13 +12,13 @@ DatabaseCleaner.strategy = :transaction
 
 # We don't want to run resque jobs
 Resque.inline = true
-def Resque.enqueue(*args)
+def Resque.enqueue(*_args)
   true
 end
 
 Sequel.extension :migration
 db = SeePoliticiansTweet::App.database
-Sequel::Migrator.run(db, "db/migrations")
+Sequel::Migrator.run(db, 'db/migrations')
 
 class Minitest::Spec
   include Rack::Test::Methods
