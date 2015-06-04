@@ -68,10 +68,10 @@ class JekyllSiteGeneratorJob
       country.github = github_repository
       country.save
     end
-    begin
+    if github_client.repository?(github_repository)
       repo = github_client.repository(github_repository)
       `git clone --quiet #{clone_url(repo)} .`
-    rescue Octokit::NotFound
+    else
       # Repository doesn't exist yet
       repo = github_client.create_repository(
         repo_name,
