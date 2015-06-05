@@ -5,7 +5,7 @@ module SeePoliticiansTweet
       one_to_many :submissions
 
       def active?
-        !!github
+        !github.nil?
       end
     end
   end

@@ -48,7 +48,7 @@ class AcceptSubmissionJob
         `git #{git_config} commit --message="#{message}"`
         `git push --quiet origin #{branch_name}`
 
-        pull_request = github_client.create_pull_request(
+        github_client.create_pull_request(
           # TODO: Change chrismytton to everypolitician once it's working correctly
           'chrismytton/everypolitician-data',
           'master',

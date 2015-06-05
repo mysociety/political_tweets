@@ -65,7 +65,7 @@ class FetchDataJob
         name = name[0...25]
       end
 
-      list = all_lists.find { |list| list.name == name }
+      list = all_lists.find { |l| l.name == name }
 
       unless list
         list = client.create_list(name)

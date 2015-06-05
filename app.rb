@@ -15,6 +15,7 @@ require 'jobs'
 require 'app/models'
 
 module SeePoliticiansTweet
+  # App for creating new SeePoliticiansTweet sites.
   class App < Sinatra::Base
     configure do
       set :database, DB
@@ -45,7 +46,9 @@ module SeePoliticiansTweet
     end
 
     use OmniAuth::Builder do
-      provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
+      provider :twitter,
+               ENV['TWITTER_CONSUMER_KEY'],
+               ENV['TWITTER_CONSUMER_SECRET']
     end
 
     use Rack::Flash
