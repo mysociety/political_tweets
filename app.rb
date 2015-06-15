@@ -124,37 +124,9 @@ module SeePoliticiansTweet
       redirect to('/')
     end
 
-    post '/submissions' do
-      submission_id = Submission.insert(params[:submission])
-      flash[:notice] = 'Your update has been submitted for approval'
-      redirect to("/submissions/#{submission_id}")
-    end
-
     get '/submissions/:id' do
       @submission = Submission[params[:id]]
       erb :new_submission
-    end
-
-    post '/submissions/:id/moderate' do
-      if params[:action] == 'accept'
-        Resque.enqueue(AcceptSubmissionJob, params[:id])
-      end
-    end
-
-    post '/github_events' do
-      request.body.rewind
-      payload_body = request.body.read
-      verify_signature(payload_body)
-      pull_request = JSON.parse(payload_body)
-      action = pull_request['action']
-      user = pull_request['pull_request']['user']['login']
-      # TODO: Better verification of sender
-      if action == 'opened' && user == 'seepoliticianstweetbot'
-        repo = pull_request['repository']['full_name']
-        number = pull_request['number']
-        Resque.enqueue(MergeJob, repo, number)
-      end
-      'OK'
     end
   end
 end

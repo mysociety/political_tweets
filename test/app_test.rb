@@ -27,19 +27,6 @@ class AppTest < Minitest::Spec
     end
   end
 
-  describe 'posting updates' do
-    it 'creates a new submission entry' do
-      country_id = app.database[:countries].insert(app.countries['/test-country'].dup.merge(user_id: @user_id))
-      post '/submissions', submission: { country_id: country_id, person_id: 42, twitter: 'barackobama' }
-      assert last_response.redirect?
-      assert_equal 'http://example.org/submissions/1', last_response.location
-      get last_response.location
-      assert last_response.ok?
-      assert last_response.body.include?('Your update has been submitted for approval')
-      assert last_response.body.include?('barackobama')
-    end
-  end
-
   describe Country do
     it 'has an active? method' do
       country = Country.new
