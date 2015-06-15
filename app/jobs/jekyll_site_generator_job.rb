@@ -14,42 +14,32 @@ class JekyllSiteGeneratorJob
     generate
   end
 
-  def templates_dir
-    File.expand_path(File.join('..', '..', '..', 'jekyll', 'templates'), __FILE__)
-  end
-
-  def repo_dir
-    File.expand_path(File.join('..', '..', '..', 'jekyll', 'repo'), __FILE__)
-  end
-
   def generate
-    Dir.mktmpdir do |dir|
-      Dir.chdir(dir) do
-        create_or_update_repo(dir)
+    with_tmp_dir do |dir|
+      create_or_update_repo(dir)
 
-        template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
-        config_yml = template.render(
-          self,
-          country: country,
-          list_owner_screen_name: @list_owner_screen_name,
-          submission_url: ENV['SUBMISSION_URL']
-        )
-        File.open(File.join(dir, '_config.yml'), 'w') do |f|
-          f.puts(config_yml)
-        end
-        template = Tilt.new(File.join(templates_dir, 'area.html.erb'))
-        areas.each do |area|
-          File.open(File.join(dir, '_areas', "#{area['list_slug']}.html"), 'w') do |f|
-            f.puts(template.render(self, area))
-          end
-        end
-
-        `git add .`
-        git_config = "-c user.name='#{github_client.login}' -c user.email='#{github_client.emails.first[:email]}'"
-        message = "Automated commit for #{country.name}"
-        `git #{git_config} commit --message="#{message}"`
-        `git push --quiet origin gh-pages`
+      template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
+      config_yml = template.render(
+        self,
+        country: country,
+        list_owner_screen_name: @list_owner_screen_name,
+        submission_url: ENV['SUBMISSION_URL']
+      )
+      File.open(File.join(dir, '_config.yml'), 'w') do |f|
+        f.puts(config_yml)
       end
+      template = Tilt.new(File.join(templates_dir, 'area.html.erb'))
+      areas.each do |area|
+        File.open(File.join(dir, '_areas', "#{area['list_slug']}.html"), 'w') do |f|
+          f.puts(template.render(self, area))
+        end
+      end
+
+      `git add .`
+      git_config = "-c user.name='#{github_client.login}' -c user.email='#{github_client.emails.first[:email]}'"
+      message = "Automated commit for #{country.name}"
+      `git #{git_config} commit --message="#{message}"`
+      `git push --quiet origin gh-pages`
     end
   end
 
@@ -80,5 +70,19 @@ class JekyllSiteGeneratorJob
 
     # Update files in repo
     FileUtils.cp_r(repo_dir + '/.', dir)
+  end
+
+  def with_tmp_dir(&block)
+    Dir.mktmpdir do |tmp_dir|
+      Dir.chdir(tmp_dir, &block)
+    end
+  end
+
+  def templates_dir
+    File.expand_path(File.join('..', '..', '..', 'jekyll', 'templates'), __FILE__)
+  end
+
+  def repo_dir
+    File.expand_path(File.join('..', '..', '..', 'jekyll', 'repo'), __FILE__)
   end
 end
