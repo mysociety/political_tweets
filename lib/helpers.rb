@@ -10,5 +10,9 @@ module SeePoliticiansTweet
       signature = 'sha1=' + OpenSSL::HMAC.hexdigest(digest, ENV['GITHUB_WEBHOOK_SECRET'], payload_body)
       return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(signature, request.env['HTTP_X_HUB_SIGNATURE'])
     end
+
+    def everypolitician
+      @everypolitician ||= Faraday.new(ENV['EVERYPOLITICIAN_URL'])
+    end
   end
 end

@@ -60,7 +60,7 @@ end
 get '/' do
   if current_user
     @countries = current_user.countries
-    @submissions = Submission.where(country_id: @countries.map(&:id))
+    @submissions = JSON.parse(everypolitician.get('/applications/2/submissions').body)
   end
   erb :index
 end
@@ -109,4 +109,9 @@ post '/countries/:id/rebuild' do
   FetchDataJob.perform_async(params[:id])
   flash[:notice] = 'Your rebuild request has been queued'
   redirect to('/')
+end
+
+post '/submissions/:id/moderate' do
+  AcceptSubmissionJob.perform_async(params[:id]) if params[:action] == 'accept'
+  'OK'
 end

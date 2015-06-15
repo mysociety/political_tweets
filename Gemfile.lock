@@ -92,6 +92,7 @@ PLATFORMS
 DEPENDENCIES
   database_cleaner
   dotenv
+  faraday
   octokit
   omniauth
   omniauth-twitter

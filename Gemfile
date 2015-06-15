@@ -14,6 +14,7 @@ gem 'puma'
 gem 'octokit'
 gem 'rack-flash3', require: 'rack/flash'
 gem 'sass'
+gem 'faraday'
 
 group :test do
   gem 'rack-test'
