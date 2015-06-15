@@ -110,8 +110,3 @@ post '/countries/:id/rebuild' do
   flash[:notice] = 'Your rebuild request has been queued'
   redirect to('/')
 end
-
-get '/submissions/:id' do
-  @submission = Submission[params[:id]]
-  erb :new_submission
-end
