@@ -11,8 +11,8 @@ require 'tilt/sass'
 require 'open-uri'
 require 'json'
 
-require 'jobs'
 require 'app/models'
+require 'app/jobs'
 
 module SeePoliticiansTweet
   # App for creating new SeePoliticiansTweet sites.
