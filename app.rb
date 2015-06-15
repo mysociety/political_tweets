@@ -11,6 +11,8 @@ require 'tilt/sass'
 require 'open-uri'
 require 'json'
 
+require 'helpers'
+
 require 'app/models'
 require 'app/jobs'
 
@@ -45,24 +47,13 @@ configure do
   set :countries, countries
 end
 
+helpers SeePoliticiansTweet::Helpers
+
 use OmniAuth::Builder do
   provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
 end
 
 use Rack::Flash
-
-helpers do
-  def current_user
-    @current_user ||= User[session[:user_id]]
-  end
-
-  # Taken from https://developer.github.com/webhooks/securing/
-  def verify_signature(payload_body)
-    digest = OpenSSL::Digest.new('sha1')
-    signature = 'sha1=' + OpenSSL::HMAC.hexdigest(digest, ENV['GITHUB_WEBHOOK_SECRET'], payload_body)
-    return halt 500, "Signatures didn't match!" unless Rack::Utils.secure_compare(signature, request.env['HTTP_X_HUB_SIGNATURE'])
-  end
-end
 
 get '/*.css' do |filename|
   scss :"sass/#{filename}"
