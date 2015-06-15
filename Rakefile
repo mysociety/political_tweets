@@ -1,5 +1,4 @@
 require 'dotenv/tasks'
-require 'resque/tasks'
 require 'rake/testtask'
 
 task app: :dotenv do
@@ -21,8 +20,6 @@ namespace :db do
     end
   end
 end
-
-task 'resque:setup' => :app
 
 Rake::TestTask.new do |t|
   t.libs << 'test'

@@ -26,8 +26,6 @@ configure do
   enable :sessions
   set :session_secret, ENV.fetch('SESSION_SECRET')
 
-  Resque.redis = ENV['REDISTOGO_URL']
-
   # Get a list of countries in EveryPolitician
   if production?
     countries_json = open('http://data.everypolitician.org/countries.json').read
@@ -102,13 +100,13 @@ post '/countries' do
     latest_term_csv: country[:latest_term_csv],
     user_id: current_user.id
   )
-  Resque.enqueue(FetchDataJob, country_id)
+  FetchDataJob.perform_async(country_id)
   flash[:notice] = 'Your See Politicians Tweet app is being built'
   redirect to('/')
 end
 
 post '/countries/:id/rebuild' do
-  Resque.enqueue(FetchDataJob, params[:id])
+  FetchDataJob.perform_async(params[:id])
   flash[:notice] = 'Your rebuild request has been queued'
   redirect to('/')
 end

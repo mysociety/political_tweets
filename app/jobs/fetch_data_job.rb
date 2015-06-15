@@ -1,29 +1,22 @@
 require 'csv'
 
-# Resque job to create Twitter lists from country data
+# Background job to create Twitter lists from country data
 class FetchDataJob
-  @queue = :default
-
-  def self.perform(country_id)
-    country = Country[country_id]
-    new(country).fetch
-  end
+  include Sidekiq::Worker
 
   attr_reader :country
   attr_reader :csv
 
-  def initialize(country)
-    @country = country
+  def perform(country_id)
+    @country = Country[country_id]
     @csv = get_csv_for_country(country)
-  end
 
-  def fetch
     areas = parse_areas_from_csv(csv)
     areas = create_lists_for_areas(areas)
     create_all_list
 
     # Generate the static site
-    Resque.enqueue(JekyllSiteGeneratorJob, country.id, client.user.screen_name, areas)
+    JekyllSiteGeneratorJob.perform_async(country.id, client.user.screen_name, areas)
   end
 
   def client

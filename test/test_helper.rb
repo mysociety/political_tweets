@@ -8,13 +8,10 @@ require_relative '../app'
 
 require 'database_cleaner'
 
-DatabaseCleaner.strategy = :transaction
+DatabaseCleaner.strategy = :truncation
 
-# We don't want to run resque jobs
-Resque.inline = true
-def Resque.enqueue(*_args)
-  true
-end
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 
 Sequel.extension :migration
 db = Sinatra::Application.database
@@ -33,5 +30,9 @@ class Minitest::Spec
 
   after :each do
     DatabaseCleaner.clean
+  end
+
+  before :each do
+    Sidekiq::Worker.clear_all
   end
 end

@@ -8,7 +8,7 @@ gem 'rake'
 gem 'sequel'
 gem 'sqlite3', groups: [:development, :test]
 gem 'pg', group: :production
-gem 'resque'
+gem 'sidekiq'
 gem 'twitter'
 gem 'puma'
 gem 'octokit'

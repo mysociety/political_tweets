@@ -1,22 +1,17 @@
 require 'github'
 
 class JekyllSiteGeneratorJob
+  include Sidekiq::Worker
   include Github
-
-  @queue = :default
-
-  def self.perform(country_id, list_owner_screen_name, areas)
-    country = Country[country_id]
-    new(country, list_owner_screen_name, areas).generate
-  end
 
   attr_reader :country
   attr_reader :areas
 
-  def initialize(country, list_owner_screen_name, areas)
-    @country = country
+  def perform(country_id, list_owner_screen_name, areas)
+    @country = Country[country_id]
     @list_owner_screen_name = list_owner_screen_name
     @areas = areas
+    generate
   end
 
   def templates_dir

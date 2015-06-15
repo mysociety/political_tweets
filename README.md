@@ -48,7 +48,7 @@ That will create some countries associated with your user account.
 
 ## Usage
 
-The application is made up of a Sinatra app and Resque background workers. In order to run all of these at once first install [Foreman](https://github.com/ddollar/foreman#installation) and then run:
+The application is made up of a Sinatra app and Sidekiq background workers. In order to run all of these at once first install [Foreman](https://github.com/ddollar/foreman#installation) and then run:
 
     foreman start
 
