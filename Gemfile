@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'sinatra', require: 'sinatra/base'
+gem 'sinatra'
 gem 'omniauth'
 gem 'omniauth-twitter'
 gem 'dotenv'

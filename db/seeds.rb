@@ -2,7 +2,7 @@ require_relative '../app'
 
 $stderr.puts 'Loading database seeds'
 
-database = SeePoliticiansTweet::App.database
+database = Sinatra::Application.database
 
 user = database[:users].first
 

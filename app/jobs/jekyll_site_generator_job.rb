@@ -59,7 +59,7 @@ class JekyllSiteGeneratorJob
   end
 
   def create_or_update_repo(dir)
-    org = SeePoliticiansTweet::App.github_organization
+    org = Sinatra::Application.github_organization
     repo_name = country.url.gsub('/', '')
     if country.github
       github_repository = country.github

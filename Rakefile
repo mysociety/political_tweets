@@ -11,7 +11,7 @@ namespace :db do
   task :migrate, [:version] => :app do |_t, args|
     require 'sequel'
     Sequel.extension :migration
-    db = SeePoliticiansTweet::App.database
+    db = Sinatra::Application.database
     if args[:version]
       puts "Migrating to version #{args[:version]}"
       Sequel::Migrator.run(db, 'db/migrations', target: args[:version].to_i)

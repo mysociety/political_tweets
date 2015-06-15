@@ -17,14 +17,14 @@ def Resque.enqueue(*_args)
 end
 
 Sequel.extension :migration
-db = SeePoliticiansTweet::App.database
+db = Sinatra::Application.database
 Sequel::Migrator.run(db, 'db/migrations')
 
 class Minitest::Spec
   include Rack::Test::Methods
 
   def app
-    SeePoliticiansTweet::App
+    Sinatra::Application
   end
 
   before :each do
