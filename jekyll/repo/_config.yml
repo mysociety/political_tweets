@@ -1,0 +1,12 @@
+---
+exclude: [README.md]
+collections:
+  areas:
+    output: true
+
+# Site specific data
+baseurl: /wales
+country: Wales
+country_id: 2
+list_owner_screen_name: political_wales
+submission_url: http://localhost:5000/applications/2/submissions
