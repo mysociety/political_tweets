@@ -1,11 +1,12 @@
 ---
+# This file will be overwritten when the site is generated
+
 exclude: [README.md]
 collections:
   areas:
     output: true
 
 # Site specific data
-baseurl: /wales
 country: Wales
 country_id: 2
 list_owner_screen_name: political_wales
