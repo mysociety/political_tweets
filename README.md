@@ -6,8 +6,8 @@ Generate Twitter lists for elected representatives using [Popolo](http://www.pop
 
 First clone this repository from GitHub:
 
-    git clone https://github.com/mysociety/political_tweets
-    cd political_tweets
+    git clone https://github.com/mysociety/SeePoliticiansTweet
+    cd SeePoliticiansTweet
 
 Now you can either proceed using vagrant or a manual install. See next two sections for details.
 
