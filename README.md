@@ -1,4 +1,4 @@
-# Political Tweets
+# See Politicians Tweet
 
 Generate Twitter lists for elected representatives using [Popolo](http://www.popoloproject.com) data from [EveryPolitician](http://everypolitician.org).
 
