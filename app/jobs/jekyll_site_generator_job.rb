@@ -1,4 +1,5 @@
 require 'github'
+require 'fileutils'
 
 class JekyllSiteGeneratorJob
   include Sidekiq::Worker
@@ -28,6 +29,10 @@ class JekyllSiteGeneratorJob
       File.open(File.join(dir, '_config.yml'), 'w') do |f|
         f.puts(config_yml)
       end
+
+      FileUtils.rm_rf(File.join(dir, '_areas'))
+      FileUtils.mkdir_p(File.join(dir, '_areas'))
+
       template = Tilt.new(File.join(templates_dir, 'area.html.erb'))
       areas.each do |area|
         File.open(File.join(dir, '_areas', "#{area['list_slug']}.html"), 'w') do |f|
