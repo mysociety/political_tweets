@@ -83,14 +83,17 @@ before '/countries*' do
 end
 
 post '/countries' do
-  country = settings.countries[params[:country]]
-  country_id = Country.insert(
-    name: country[:name],
-    url: country[:url],
-    latest_term_csv: country[:latest_term_csv],
-    user_id: current_user.id
+  country_data = settings.countries.find do |country|
+    country[:slug] == params[:country]
+  end
+  # FIXME: This should handle all legislatures for a country
+  legislature = country_data[:legislatures].first
+  country = current_user.add_country(
+    name: country_data[:name],
+    url: '/' + country_data[:slug],
+    latest_term_csv: legislature[:legislative_periods].first[:csv]
   )
-  FetchDataJob.perform_async(country_id)
+  FetchDataJob.perform_async(country.id)
   flash[:notice] = 'Your See Politicians Tweet app is being built'
   redirect to('/')
 end
