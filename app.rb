@@ -25,24 +25,10 @@ configure do
 
   enable :sessions
   set :session_secret, ENV.fetch('SESSION_SECRET')
-
-  # Get a list of countries in EveryPolitician
-  if production?
-    countries_json = open('http://data.everypolitician.org/countries.json').read
-  else
-    countries_json = open('data/countries.json').read
-  end
-
-  countries_list = JSON.parse(countries_json)
-  countries = {}
-  countries_list.each do |country|
-    countries[country['url']] = {
-      name: country['name'],
-      url: country['url'],
-      latest_term_csv: country['latest_term_csv']
-    }
-  end
-  set :countries, countries
+  set :countries, lambda {
+    countries_json = open('https://raw.githubusercontent.com/everypolitician/everypolitician-data/master/countries.json').read
+    JSON.parse(countries_json, symbolize_names: true)
+  }
 end
 
 helpers SeePoliticiansTweet::Helpers
