@@ -3,8 +3,8 @@
     <select name="country" id="id_country">
         <option disabled selected></option>
         <optgroup label="EveryPolitician.org">
-          <% settings.countries.each do |url, country| %>
-            <option value="<%= url %>"><%= country[:name] %></option>
+          <% settings.countries.each do |country| %>
+            <option value="<%= country[:slug] %>"><%= country[:name] %></option>
           <% end %>
         </optgroup>
     </select>

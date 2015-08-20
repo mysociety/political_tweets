@@ -15,6 +15,7 @@ gem 'octokit'
 gem 'rack-flash3', require: 'rack/flash'
 gem 'sass'
 gem 'faraday'
+gem 'pry'
 
 group :test do
   gem 'rack-test'
