@@ -1,6 +1,12 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (4.2.3)
+      i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
     addressable (2.3.8)
     bacon (1.2.0)
     buftok (0.2.0)
@@ -20,10 +26,12 @@ GEM
     http (0.6.4)
       http_parser.rb (~> 0.6.0)
     http_parser.rb (0.6.0)
+    i18n (0.7.0)
     json (1.8.2)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
     method_source (0.8.2)
+    minitest (5.8.0)
     multipart-post (2.0.0)
     naught (1.0.0)
     oauth (0.4.7)
@@ -93,6 +101,8 @@ GEM
       memoizable (~> 0.4.0)
       naught (~> 1.0)
       simple_oauth (~> 0.3.0)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
     webmock (1.21.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -101,6 +111,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   database_cleaner
   dotenv
   faraday
