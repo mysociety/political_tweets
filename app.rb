@@ -50,11 +50,7 @@ end
 get '/' do
   if current_user
     @countries = current_user.countries
-    @submissions = JSON.parse(
-      everypolitician.get(
-        "/applications/#{ENV['EVERYPOLITICIAN_APP_ID']}/submissions"
-      ).body
-    )
+    @submissions = []
   end
   erb :index
 end
