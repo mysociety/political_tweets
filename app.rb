@@ -86,11 +86,13 @@ before '/countries*' do
 end
 
 post '/countries' do
+  country_slug, legislature_slug = params[:country_legislature].split(':')
   country_data = settings.countries.find do |country|
-    country[:slug] == params[:country]
+    country[:slug] == country_slug
   end
-  # FIXME: This should handle all legislatures for a country
-  legislature = country_data[:legislatures].first
+  legislature = country_data[:legislatures].find do |legislature|
+    legislature[:slug] == legislature_slug
+  end
   country = current_user.add_country(
     name: country_data[:name],
     url: '/' + country_data[:slug],

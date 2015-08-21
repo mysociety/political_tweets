@@ -1,10 +1,12 @@
 <form action="<%= url('/countries') %>" method="post">
     <label for="id_country">Create a site for:</label>
-    <select name="country" id="id_country">
+    <select name="country_legislature" id="id_country">
         <option disabled selected></option>
         <optgroup label="EveryPolitician.org">
           <% settings.countries.each do |country| %>
-            <option value="<%= country[:slug] %>"><%= country[:name] %></option>
+            <% country[:legislatures].each do |legislature| %>
+              <option value="<%= country[:slug] %>:<%= legislature[:slug] %>"><%= country[:name] %>: <%= legislature[:name] %></option>
+            <% end %>
           <% end %>
         </optgroup>
     </select>
