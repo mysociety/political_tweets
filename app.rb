@@ -7,6 +7,7 @@ require 'tilt/erb'
 require 'tilt/sass'
 require 'open-uri'
 require 'json'
+require 'active_support/core_ext'
 
 $LOAD_PATH << File.expand_path('../lib', __FILE__)
 $LOAD_PATH << File.expand_path('../', __FILE__)
@@ -18,7 +19,7 @@ configure do
   }
   set :github_organization, ENV.fetch('GITHUB_ORGANIZATION')
 
-  enable :sessions
+  set :sessions, expire_after: 5.years
   set :session_secret, ENV.fetch('SESSION_SECRET')
   set :countries, lambda {
     countries_json = open('https://raw.githubusercontent.com/everypolitician/everypolitician-data/master/countries.json').read
