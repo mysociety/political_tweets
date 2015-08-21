@@ -1,35 +1,35 @@
 require 'csv'
 
-# Background job to create Twitter lists from country data
+# Background job to create Twitter lists from site data
 class FetchDataJob
   include Sidekiq::Worker
 
-  attr_reader :country
+  attr_reader :site
   attr_reader :csv
 
-  def perform(country_id)
-    @country = Country[country_id]
-    @csv = get_csv_for_country(country)
+  def perform(site_id)
+    @site = site[site_id]
+    @csv = get_csv_for_site(site)
 
     areas = parse_areas_from_csv(csv)
     areas = create_lists_for_areas(areas)
     create_all_list
 
     # Generate the static site
-    JekyllSiteGeneratorJob.perform_async(country.id, client.user.screen_name, areas)
+    JekyllSiteGeneratorJob.perform_async(site.id, client.user.screen_name, areas)
   end
 
   def client
     @client ||= Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV['TWITTER_CONSUMER_KEY']
       config.consumer_secret     = ENV['TWITTER_CONSUMER_SECRET']
-      config.access_token        = country.user.token
-      config.access_token_secret = country.user.secret
+      config.access_token        = site.user.token
+      config.access_token_secret = site.user.secret
     end
   end
 
-  def get_csv_for_country(country)
-    latest_term_csv = country.latest_term_csv
+  def get_csv_for_site(site)
+    latest_term_csv = site.latest_term_csv
     term_csv = open('http://data.everypolitician.org' + latest_term_csv).read
     CSV.parse(term_csv, headers: true)
   end

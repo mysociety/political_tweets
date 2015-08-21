@@ -49,7 +49,7 @@ end
 
 get '/' do
   if current_user
-    @countries = current_user.countries
+    @sites = current_user.sites
     @submissions = []
   end
   erb :index
@@ -79,29 +79,29 @@ get '/logout' do
   redirect to('/')
 end
 
-before '/countries*' do
+before '/sites*' do
   redirect to('/auth/twitter') if current_user.nil?
 end
 
-post '/countries' do
+post '/sites' do
   country_slug, legislature_slug = params[:country_legislature].split(':')
-  country_data = settings.countries.find do |country|
+  country = settings.countries.find do |country|
     country[:slug] == country_slug
   end
-  legislature = country_data[:legislatures].find do |legislature|
+  legislature = country[:legislatures].find do |legislature|
     legislature[:slug] == legislature_slug
   end
-  country = current_user.add_country(
-    name: country_data[:name],
-    url: '/' + country_data[:slug],
+  site = current_user.add_site(
+    name: country[:name],
+    url: '/' + country[:slug],
     latest_term_csv: legislature[:legislative_periods].first[:csv]
   )
-  FetchDataJob.perform_async(country.id)
+  FetchDataJob.perform_async(site.id)
   flash[:notice] = 'Your See Politicians Tweet app is being built'
   redirect to('/')
 end
 
-post '/countries/:id/rebuild' do
+post '/sites/:id/rebuild' do
   FetchDataJob.perform_async(params[:id])
   flash[:notice] = 'Your rebuild request has been queued'
   redirect to('/')

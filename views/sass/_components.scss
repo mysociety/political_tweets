@@ -1,4 +1,4 @@
-.country {
+.site {
   display: block;
   background: #fff;
   padding: 1.5em;
@@ -6,40 +6,40 @@
   margin-top: 1.5em;
 }
 
-.country--active {
+.site--active {
   border-right: 5px solid $color-green-500;
 
-  .country__status {
+  .site__status {
     color: $color-green-500;
   }
 }
 
-.country--building {
+.site--building {
   border-right: 5px solid $color-orange-600;
 
-  .country__status {
+  .site__status {
     color: $color-orange-600;
   }
 }
 
-.country--new {
+.site--new {
   border-right: 5px solid $color-blue-500;
 }
 
-.country__name {
+.site__name {
   margin-top: 0;
   margin-bottom: 0.5em;
 }
 
-.country__status {
+.site__status {
   float: right;
 }
 
-.country__rebuild {
+.site__rebuild {
   margin-top: 0.8em;
 }
 
-.country__url {
+.site__url {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -47,7 +47,7 @@
   color: $color-bluegrey-300;
 }
 
-.country--new {
+.site--new {
   h2 {
     margin-top: 0;
     margin-bottom: 0.8em;

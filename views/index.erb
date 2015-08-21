@@ -1,17 +1,17 @@
 <% if current_user %>
 
-  <% if @countries.any? %>
-      <% @countries.each do |country| %>
-        <%= erb :country, locals: { country: country } %>
+  <% if @sites.any? %>
+      <% @sites.each do |site| %>
+        <%= erb :site, locals: { site: site } %>
       <% end %>
-    <div class="country country--new">
-        <h2>Create a new country</h2>
-        <%= erb :new_country_form %>
+    <div class="site site--new">
+        <h2>Create a new site</h2>
+        <%= erb :new_site_form %>
     </div>
   <% else %>
-    <div class="country country--new">
-        <h2>Create your first country</h2>
-        <%= erb :new_country_form %>
+    <div class="site site--new">
+        <h2>Create your first site</h2>
+        <%= erb :new_site_form %>
     </div>
   <% end %>
 
@@ -25,7 +25,7 @@
 
     <p class="login-prompt">
         <a href="<%= url '/auth/twitter' %>">Log in with Twitter</a>
-        to create your first country.
+        to create your first site.
     </p>
 
 <% end %>

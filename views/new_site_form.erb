@@ -1,6 +1,6 @@
-<form action="<%= url('/countries') %>" method="post">
-    <label for="id_country">Create a site for:</label>
-    <select name="country_legislature" id="id_country">
+<form action="<%= url('/sites') %>" method="post">
+    <label for="id_country_legislature">Create a site for:</label>
+    <select name="country_legislature" id="id_country_legislature">
         <option disabled selected></option>
         <optgroup label="EveryPolitician.org">
           <% settings.countries.each do |country| %>
