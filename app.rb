@@ -92,8 +92,8 @@ post '/sites' do
     legislature[:slug] == legislature_slug
   end
   site = current_user.add_site(
-    name: country[:name],
-    url: '/' + country[:slug],
+    name: "#{country[:name]} #{legislature[:name]}",
+    slug: [country[:slug], legislature[:slug]].join('_'),
     latest_term_csv: legislature[:legislative_periods].first[:csv]
   )
   FetchDataJob.perform_async(site.id)
