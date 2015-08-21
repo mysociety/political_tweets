@@ -1,4 +1,8 @@
-DB = Sequel.connect(ENV['DATABASE_URL'], encoding: 'utf-8')
+Sinatra::Application.database.extension(:connection_validator)
+Sinatra::Application.database.pool.connection_validation_timeout = -1
+
+Sequel::Model.plugin :timestamps
+Sequel::Model.plugin :validation_helpers
 
 require 'app/models/user'
 require 'app/models/country'

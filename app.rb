@@ -1,26 +1,21 @@
 require 'bundler'
 
 Bundler.require
-Dotenv.load(".env.#{Sinatra::Base.environment}", '.env')
-
-$LOAD_PATH << File.expand_path('../lib', __FILE__)
-$LOAD_PATH << File.expand_path('../', __FILE__)
+Dotenv.load
 
 require 'tilt/erb'
 require 'tilt/sass'
 require 'open-uri'
 require 'json'
 
-require 'helpers'
-
-require 'app/models'
-require 'app/jobs'
-
-# Easy access to models from console
-include SeePoliticiansTweet::Models
+$LOAD_PATH << File.expand_path('../lib', __FILE__)
+$LOAD_PATH << File.expand_path('../', __FILE__)
 
 configure do
-  set :database, DB
+  set :database, lambda {
+    ENV['DATABASE_URL'] ||
+      "postgres:///seepoliticianstweet_#{environment}"
+  }
   set :github_organization, ENV.fetch('GITHUB_ORGANIZATION')
 
   enable :sessions
@@ -30,6 +25,13 @@ configure do
     JSON.parse(countries_json, symbolize_names: true)
   }
 end
+
+require 'helpers'
+require 'app/models'
+require 'app/jobs'
+
+# Easy access to models from console
+include SeePoliticiansTweet::Models
 
 helpers SeePoliticiansTweet::Helpers
 

@@ -6,8 +6,7 @@ gem 'omniauth-twitter'
 gem 'dotenv'
 gem 'rake'
 gem 'sequel'
-gem 'sqlite3', groups: [:development, :test]
-gem 'pg', group: :production
+gem 'pg'
 gem 'sidekiq'
 gem 'twitter'
 gem 'puma'
@@ -16,6 +15,7 @@ gem 'rack-flash3', require: 'rack/flash'
 gem 'sass'
 gem 'faraday'
 gem 'pry'
+gem 'sinatra-sequel'
 
 group :test do
   gem 'rack-test'
