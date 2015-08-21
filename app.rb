@@ -37,6 +37,7 @@ include SeePoliticiansTweet::Models
 helpers SeePoliticiansTweet::Helpers
 
 use OmniAuth::Builder do
+  provider :developer if development?
   provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
 end
 
@@ -58,21 +59,22 @@ get '/' do
   erb :index
 end
 
-get '/auth/:name/callback' do
-  auth = request.env['omniauth.auth']
-  p auth
-  user = User.first(twitter_uid: auth[:uid])
-  if user
-    session[:user_id] = user.id
-  else
-    session[:user_id] = User.insert(
-      twitter_uid: auth[:uid],
-      token: auth[:credentials][:token],
-      secret: auth[:credentials][:secret]
-    )
+%w(get post).each do |method|
+  send(method, '/auth/:provider/callback') do
+    auth = request.env['omniauth.auth']
+    user = User.first(twitter_uid: auth[:uid])
+    if user
+      session[:user_id] = user.id
+    else
+      session[:user_id] = User.insert(
+        twitter_uid: auth[:uid],
+        token: auth[:credentials][:token],
+        secret: auth[:credentials][:secret]
+      )
+    end
+    flash[:notice] = 'You have successfully logged in with Twitter'
+    redirect to('/')
   end
-  flash[:notice] = 'You have successfully logged in with Twitter'
-  redirect to('/')
 end
 
 get '/logout' do
