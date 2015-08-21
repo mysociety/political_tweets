@@ -50,7 +50,7 @@ class JekyllSiteGeneratorJob
 
   def create_or_update_repo(dir)
     org = Sinatra::Application.github_organization
-    repo_name = site.url.gsub('/', '')
+    repo_name = site.slug
     if site.github
       github_repository = site.github
     else

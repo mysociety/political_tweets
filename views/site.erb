@@ -5,8 +5,8 @@
         <%= site.name %>
     </h2>
     <p class="site__url">
-        <a href="https://<%= settings.github_organization %>.github.io<%= site.url %>">
-            https://<%= settings.github_organization %>.github.io<%= site.url %>
+        <a href="https://<%= settings.github_organization %>.github.io/<%= site.slug %>">
+            https://<%= settings.github_organization %>.github.io/<%= site.slug %>
         </a>
     </p>
   <% else %>
@@ -15,7 +15,7 @@
         <%= site.name %>
     </h2>
     <p class="site__url">
-        https://<%= settings.github_organization %>.github.io<%= site.url %>
+        https://<%= settings.github_organization %>.github.io/<%= site.slug %>
     </p>
   <% end %>
     <form class="site__rebuild" action="<%= url "/sites/#{site.id}/rebuild" %>" method="post">
