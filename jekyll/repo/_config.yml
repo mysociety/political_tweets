@@ -7,7 +7,6 @@ collections:
     output: true
 
 # Site specific data
-country: Wales
-country_id: 2
+site_id: 1
 list_owner_screen_name: political_wales
 submission_url: http://localhost:5000/applications/2/submissions

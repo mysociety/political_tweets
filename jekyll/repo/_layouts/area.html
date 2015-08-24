@@ -29,7 +29,7 @@ layout: default
         {% for politician in page.politicians %}
         {% unless politician.screen_name %}
         <form class="person" action="{{ site.submission_url }}" method="post">
-            <input type="hidden" name="submission[country]" value="{{ site.country }}">
+            <input type="hidden" name="submission[site_id]" value="{{ site.site_id }}">
             <input type="hidden" name="submission[person_id]" value="{{ politician.id }}">
             <h3>{{ politician.name }}</h3>
             <p>

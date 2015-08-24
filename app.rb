@@ -7,6 +7,7 @@ require 'tilt/erb'
 require 'tilt/sass'
 require 'open-uri'
 require 'json'
+require 'active_support/core_ext'
 
 $LOAD_PATH << File.expand_path('../lib', __FILE__)
 $LOAD_PATH << File.expand_path('../', __FILE__)
@@ -18,7 +19,7 @@ configure do
   }
   set :github_organization, ENV.fetch('GITHUB_ORGANIZATION')
 
-  enable :sessions
+  set :sessions, expire_after: 5.years
   set :session_secret, ENV.fetch('SESSION_SECRET')
   set :countries, lambda {
     countries_json = open('https://raw.githubusercontent.com/everypolitician/everypolitician-data/master/countries.json').read
@@ -36,6 +37,7 @@ include SeePoliticiansTweet::Models
 helpers SeePoliticiansTweet::Helpers
 
 use OmniAuth::Builder do
+  provider :developer if development?
   provider :twitter, ENV['TWITTER_CONSUMER_KEY'], ENV['TWITTER_CONSUMER_SECRET']
 end
 
@@ -47,31 +49,28 @@ end
 
 get '/' do
   if current_user
-    @countries = current_user.countries
-    @submissions = JSON.parse(
-      everypolitician.get(
-        "/applications/#{ENV['EVERYPOLITICIAN_APP_ID']}/submissions"
-      ).body
-    )
+    @sites = current_user.sites
+    @submissions = []
   end
   erb :index
 end
 
-get '/auth/:name/callback' do
-  auth = request.env['omniauth.auth']
-  p auth
-  user = User.first(twitter_uid: auth[:uid])
-  if user
-    session[:user_id] = user.id
-  else
-    session[:user_id] = User.insert(
-      twitter_uid: auth[:uid],
-      token: auth[:credentials][:token],
-      secret: auth[:credentials][:secret]
-    )
+%w(get post).each do |method|
+  send(method, '/auth/:provider/callback') do
+    auth = request.env['omniauth.auth']
+    user = User.first(twitter_uid: auth[:uid])
+    if user
+      session[:user_id] = user.id
+    else
+      session[:user_id] = User.insert(
+        twitter_uid: auth[:uid],
+        token: auth[:credentials][:token],
+        secret: auth[:credentials][:secret]
+      )
+    end
+    flash[:notice] = 'You have successfully logged in with Twitter'
+    redirect to('/')
   end
-  flash[:notice] = 'You have successfully logged in with Twitter'
-  redirect to('/')
 end
 
 get '/logout' do
@@ -80,27 +79,29 @@ get '/logout' do
   redirect to('/')
 end
 
-before '/countries*' do
+before '/sites*' do
   redirect to('/auth/twitter') if current_user.nil?
 end
 
-post '/countries' do
-  country_data = settings.countries.find do |country|
-    country[:slug] == params[:country]
+post '/sites' do
+  country_slug, legislature_slug = params[:country_legislature].split(':')
+  country = settings.countries.find do |country|
+    country[:slug] == country_slug
   end
-  # FIXME: This should handle all legislatures for a country
-  legislature = country_data[:legislatures].first
-  country = current_user.add_country(
-    name: country_data[:name],
-    url: '/' + country_data[:slug],
+  legislature = country[:legislatures].find do |legislature|
+    legislature[:slug] == legislature_slug
+  end
+  site = current_user.add_site(
+    name: "#{country[:name]} #{legislature[:name]}",
+    slug: [country[:slug], legislature[:slug]].join('_'),
     latest_term_csv: legislature[:legislative_periods].first[:csv]
   )
-  FetchDataJob.perform_async(country.id)
+  FetchDataJob.perform_async(site.id)
   flash[:notice] = 'Your See Politicians Tweet app is being built'
   redirect to('/')
 end
 
-post '/countries/:id/rebuild' do
+post '/sites/:id/rebuild' do
   FetchDataJob.perform_async(params[:id])
   flash[:notice] = 'Your rebuild request has been queued'
   redirect to('/')

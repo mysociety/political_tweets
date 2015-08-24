@@ -16,6 +16,7 @@ gem 'sass'
 gem 'faraday'
 gem 'pry'
 gem 'sinatra-sequel'
+gem 'activesupport', require: 'active_support'
 
 group :test do
   gem 'rack-test'

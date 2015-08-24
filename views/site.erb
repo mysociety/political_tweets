@@ -1,0 +1,24 @@
+<div class="site site--<% if site.active? %>active<% else %>building<% end %>">
+  <% if site.active? %>
+    <span class="site__status">Active</span>
+    <h2 class="site__name">
+        <%= site.name %>
+    </h2>
+    <p class="site__url">
+        <a href="https://<%= settings.github_organization %>.github.io/<%= site.slug %>">
+            https://<%= settings.github_organization %>.github.io/<%= site.slug %>
+        </a>
+    </p>
+  <% else %>
+    <span class="site__status">Building</span>
+    <h2 class="site__name">
+        <%= site.name %>
+    </h2>
+    <p class="site__url">
+        https://<%= settings.github_organization %>.github.io/<%= site.slug %>
+    </p>
+  <% end %>
+    <form class="site__rebuild" action="<%= url "/sites/#{site.id}/rebuild" %>" method="post">
+        <button class="button button--secondary button--small" type="submit">Force rebuild</button>
+    </form>
+</div>

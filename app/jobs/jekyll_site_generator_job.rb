@@ -5,11 +5,11 @@ class JekyllSiteGeneratorJob
   include Sidekiq::Worker
   include Github
 
-  attr_reader :country
+  attr_reader :site
   attr_reader :areas
 
-  def perform(country_id, list_owner_screen_name, areas)
-    @country = Country[country_id]
+  def perform(site_id, list_owner_screen_name, areas)
+    @site = Site[site_id]
     @list_owner_screen_name = list_owner_screen_name
     @areas = areas
     generate
@@ -22,7 +22,7 @@ class JekyllSiteGeneratorJob
       template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
       config_yml = template.render(
         self,
-        country: country,
+        site: site,
         list_owner_screen_name: @list_owner_screen_name,
         submission_url: ENV['SUBMISSION_URL']
       )
@@ -42,7 +42,7 @@ class JekyllSiteGeneratorJob
 
       `git add .`
       git_config = "-c user.name='#{github_client.login}' -c user.email='#{github_client.emails.first[:email]}'"
-      message = "Automated commit for #{country.name}"
+      message = "Automated commit for #{site.name}"
       `git #{git_config} commit --message="#{message}"`
       `git push --quiet origin gh-pages`
     end
@@ -50,13 +50,13 @@ class JekyllSiteGeneratorJob
 
   def create_or_update_repo(dir)
     org = Sinatra::Application.github_organization
-    repo_name = country.url.gsub('/', '')
-    if country.github
-      github_repository = country.github
+    repo_name = site.slug
+    if site.github
+      github_repository = site.github
     else
       github_repository = "#{org}/#{repo_name}"
-      country.github = github_repository
-      country.save
+      site.github = github_repository
+      site.save
     end
     if github_client.repository?(github_repository)
       repo = github_client.repository(github_repository)
