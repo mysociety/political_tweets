@@ -112,6 +112,13 @@ post '/submissions' do
 end
 
 post '/submissions/:id/moderate' do
-  AcceptSubmissionJob.perform_async(params[:id]) if params[:action] == 'accept'
-  'OK'
+  if params[:action] == 'accept'
+    AcceptSubmissionJob.perform_async(params[:id]) if params[:action] == 'accept'
+    flash[:notice] = 'Submission accepted'
+  else
+    submission = Submission[params[:id]]
+    submission.delete
+    flash[:notice] = 'Submission rejected'
+  end
+  redirect to('/')
 end
