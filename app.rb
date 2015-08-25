@@ -50,7 +50,6 @@ end
 get '/' do
   if current_user
     @sites = current_user.sites
-    @submissions = []
   end
   erb :index
 end
@@ -107,7 +106,20 @@ post '/sites/:id/rebuild' do
   redirect to('/')
 end
 
+post '/submissions' do
+  submission = Submission.create(params[:submission])
+  redirect submission.site.url + '/submission-success'
+end
+
 post '/submissions/:id/moderate' do
-  AcceptSubmissionJob.perform_async(params[:id]) if params[:action] == 'accept'
-  'OK'
+  redirect to('/auth/twitter') if current_user.nil?
+  if params[:action] == 'accept'
+    AcceptSubmissionJob.perform_async(params[:id]) if params[:action] == 'accept'
+    flash[:notice] = 'Submission accepted'
+  else
+    submission = Submission[params[:id]]
+    submission.delete
+    flash[:notice] = 'Submission rejected'
+  end
+  redirect to('/')
 end

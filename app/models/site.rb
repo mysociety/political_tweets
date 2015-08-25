@@ -22,6 +22,11 @@ module SeePoliticiansTweet
       def csv_data
         @csv_data ||= open(csv_url).read
       end
+
+      def url
+        org, repo = github.split('/')
+        "https://#{org}.github.io/#{repo}"
+      end
     end
   end
 end
