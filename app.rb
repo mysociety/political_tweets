@@ -107,6 +107,11 @@ post '/sites/:id/rebuild' do
   redirect to('/')
 end
 
+post '/submissions' do
+  submission = Submission.create(params[:submission])
+  redirect submission.site.url + '/submission-success'
+end
+
 post '/submissions/:id/moderate' do
   AcceptSubmissionJob.perform_async(params[:id]) if params[:action] == 'accept'
   'OK'
