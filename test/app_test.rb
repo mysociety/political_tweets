@@ -13,6 +13,7 @@ class AppTest < Minitest::Spec
         slug: 'Test_Country',
         legislatures: [
           {
+            slug: 'Example',
             legislative_periods: [
               {
                 csv: 'foo/bar.csv'
@@ -31,18 +32,18 @@ class AppTest < Minitest::Spec
 
   describe 'creating countries' do
     it 'lets you choose a country' do
-      post '/countries', { country: 'Test_Country' }, 'rack.session' => { user_id: @user_id }
+      post '/sites', { country_legislature: 'Test_Country:Example' }, 'rack.session' => { user_id: @user_id }
       assert last_response.redirect?
       assert_equal 'http://example.org/', last_response.location
     end
   end
 
-  describe Country do
+  describe Site do
     it 'has an active? method' do
-      country = Country.new
-      assert !country.active?
-      country.github = 'foo/bar'
-      assert country.active?
+      site = Site.new
+      assert !site.active?
+      site.github = 'foo/bar'
+      assert site.active?
     end
   end
 end
