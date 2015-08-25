@@ -1,17 +1,8 @@
-<div class="country">
-    <h2>New submission for <%= submission['country'] %></h2>
-    <ul>
-        <li>Person: <%= submission['person_id'] %></li>
-        <li>
-            <ul>
-                <% submission['updates'].each do |update| %>
-                    <li><b><%= update['field'] %></b>: <%= update['value'] %></li>
-                <% end %>
-            </ul>
-        </li>
-    </ul>
-    <form action="<%= url "/submissions/#{submission['id']}/moderate" %>" method="post">
-        <input type="submit" name="action" value="accept">
-        <input type="submit" name="action" value="reject">
-    </form>
-</div>
+<ul>
+    <li>Person: <%= submission.person_id %></li>
+    <li>Twitter: <%= submission.twitter %></li>
+</ul>
+<form action="<%= url "/submissions/#{submission['id']}/moderate" %>" method="post">
+    <input class="button button--primary" type="submit" name="action" value="accept">
+    <input class="button button--secondary" type="submit" name="action" value="reject">
+</form>

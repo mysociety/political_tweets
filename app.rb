@@ -50,7 +50,6 @@ end
 get '/' do
   if current_user
     @sites = current_user.sites
-    @submissions = []
   end
   erb :index
 end
