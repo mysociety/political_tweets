@@ -16,14 +16,14 @@
     </h2>
   <% end %>
 
+  <form class="site__rebuild" action="<%= url "/sites/#{site.id}/rebuild" %>" method="post">
+      <button class="button button--secondary button--small" type="submit">Force rebuild</button>
+  </form>
+
   <% if site.submissions.any? %>
     <h3>Submissions</h3>
     <% site.submissions.each do |submission| %>
         <%= erb :submission, locals: { submission: submission } %>
     <% end %>
   <% end %>
-
-    <form class="site__rebuild" action="<%= url "/sites/#{site.id}/rebuild" %>" method="post">
-        <button class="button button--secondary button--small" type="submit">Force rebuild</button>
-    </form>
 </div>
