@@ -112,6 +112,7 @@ post '/submissions' do
 end
 
 post '/submissions/:id/moderate' do
+  redirect to('/auth/twitter') if current_user.nil?
   if params[:action] == 'accept'
     AcceptSubmissionJob.perform_async(params[:id]) if params[:action] == 'accept'
     flash[:notice] = 'Submission accepted'
