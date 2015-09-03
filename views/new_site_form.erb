@@ -11,11 +11,14 @@
         </optgroup>
     </select>
 
+  <%# Disable grouping option for now %>
+  <% if false %>
     <label for="id_grouping">Group by:</label>
     <select name="grouping" id="id_grouping">
         <option value="area" selected>Area</option>
         <option value="group" disabled>Group</option>
     </select>
+  <% end %>
 
     <button class="button button--primary" type="submit">Create</button>
 </form>

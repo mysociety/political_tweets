@@ -76,7 +76,8 @@
     select {
       display: inline-block;
       width: auto;
-      max-width: 11em;
+      max-width: 15em;
+      // max-width: 11em; // useful when there are two select boxes on a line
       margin: 0 1em 0 0.2em;
     }
 
