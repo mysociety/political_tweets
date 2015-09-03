@@ -103,6 +103,28 @@ input[type="search"] {
     }
 }
 
+.input-append {
+  @include clearfix();
+
+  & > * {
+    float: left;
+  }
+
+  .form-control {
+    width: 70%;
+    border-radius: 0.2em 0 0 0.2em;
+    border-left-width: 1px;
+  }
+
+  .button {
+    width: 30%;
+    padding-left: 0;
+    padding-right: 0;
+    border-radius: 0 0.2em 0.2em 0;
+    border-left-width: 0;
+  }
+}
+
 
 // Replicate the styling from the Twitter widget
 // that will replace this element in a few seconds.
