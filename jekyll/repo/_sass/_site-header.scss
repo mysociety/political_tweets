@@ -58,3 +58,56 @@
         }
     }
 }
+
+@media (max-width: $increment * 1023) {
+  .site-logo {
+    font-size: 1.5em;
+    margin-right: 0.4em;
+  }
+
+  .site-header h2 {
+    display: inline;
+    font-size: 1em;
+    vertical-align: -0.3em; // visually line up with icon beside it
+  }
+}
+
+@media (max-width: $increment * 1023) and (max-height: 649px) {
+  .site-header__about {
+    display: none;
+  }
+}
+
+@media (max-width: $increment * 699) {
+  .site-logo {
+    display: none;
+  }
+
+  .site-header {
+    padding-bottom: 0;
+
+    h2 {
+      vertical-align: 0;
+    }
+
+    h1 {
+      display: inline;
+      margin-left: 0.5em;
+      font-size: 1em;
+
+      a {
+        display: inline;
+        padding: 0;
+        border: 0;
+      }
+    }
+
+    p {
+      display: none;
+    }
+  }
+
+  .site-header__about {
+    display: none;
+  }
+}
