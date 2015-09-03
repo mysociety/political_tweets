@@ -1,3 +1,5 @@
+require 'ocd_division_id'
+
 # Background job to create Twitter lists from site data
 class FetchDataJob
   include Sidekiq::Worker
@@ -25,6 +27,21 @@ class FetchDataJob
   end
 
   def parse_areas_from_csv(csv)
+    area_ids = csv.map { |row| OcdDivisionId.new(row['area_id']) }
+    id_set = OcdDivsionIdSet.new(*area_ids)
+    grouping = id_set.common_type
+    areas = id_set.map { |id| { name: id.id_for(grouping) } }
+    csv.each do |row|
+      area = areas.find { |a| a[:name] == OcdDivisionId.new(row['area_id']).id_for(grouping) }
+      area[:politicians] ||= []
+      area[:politicians] << {
+        id: row['id'],
+        name: row['name'],
+        twitter: row['twitter']
+      }
+    end
+    areas
+  rescue OcdDivisionId::InvalidDivisionId
     areas = csv.map { |r| r['area'].strip }.compact.uniq
     areas = areas.map { |a| { name: a } }
     csv.each do |row|
