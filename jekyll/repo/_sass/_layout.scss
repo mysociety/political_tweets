@@ -1,9 +1,20 @@
+$desktop-header-width: 15em;
+$desktop-nav-width: 18em;
+$desktop-timeline-width: 30em;
+$desktop-people-width: 15em;
+
+$tablet-nav-width: 15em;
+$tablet-people-width: 12em;
+
+$phablet-header-height: 3em;
+$phablet-nav-height: 6em;
+
 html, body {
     // Set a sizing context for children of body
     // eg: so they can stretch to full window height.
     width: 100%;
     height: 100%;
-    display: relative;
+    position: relative;
 }
 
 *, *:before, *:after {
@@ -15,7 +26,7 @@ html, body {
     top: 0;
     left: 0;
     bottom: 0;
-    width: 15em;
+    width: $desktop-header-width;
     overflow: auto;
 }
 
@@ -23,8 +34,8 @@ html, body {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 15em;
-    width: 18em;
+    left: $desktop-header-width;
+    width: $desktop-nav-width;
     overflow: auto;
 }
 
@@ -35,8 +46,9 @@ html, body {
     right: 0;
     bottom: 0;
     height: 100%;
-    left: 15em + 18em;
+    left: $desktop-header-width + $desktop-nav-width;
     overflow: auto;
+    max-width: $desktop-timeline-width + $desktop-people-width;
 }
 
 .site-content__tweets {
@@ -44,8 +56,8 @@ html, body {
     top: 0;
     left: 0;
     bottom: 0;
+    right: $desktop-people-width;
     height: 100%;
-    width: 30em;
 }
 
 .site-content__people {
@@ -53,10 +65,75 @@ html, body {
     top: 0;
     right: 0;
     bottom: 0;
-    left: 30em;
+    width: $desktop-people-width;
+    overflow: auto;
 }
 
 .twitter-timeline {
     height: 100% !important;
     display: block !important;
+}
+
+iframe.twitter-timeline[data-widget-id] + a.twitter-timeline {
+  // There's a split second where the iframe and the placeholder link
+  // both exist in the DOM at the same time, while the twitter widget is
+  // in the process of loading. This is the gap between the iframe being
+  // given a "data-widget-id" attribute, and the placeholder element
+  // being hidden. So, we hide the placeholder with CSS here, to avoid
+  // a scrollbar being shown (because of two 100% height elements).
+  display: none !important;
+}
+
+@media (max-width: $increment * 1023) {
+  .site-header {
+    width: $tablet-nav-width;
+    bottom: 50%;
+  }
+
+  .area-list {
+    left: 0;
+    top: 50%;
+    width: $tablet-nav-width;
+  }
+
+  .site-content {
+    left: $tablet-nav-width;
+  }
+
+  .site-content__tweets {
+    right: $tablet-people-width;
+  }
+
+  .site-content__people {
+    width: $tablet-people-width;
+  }
+}
+
+@media (max-width: $increment * 699) {
+  .site-header {
+    width: 100%;
+    height: $phablet-header-height;
+  }
+
+  .area-list {
+    width: 100%;
+    top: $phablet-header-height;
+    height: $phablet-nav-height;
+  }
+
+  .site-content {
+    top: $phablet-header-height + $phablet-nav-height;
+    left: 0;
+    height: auto;
+  }
+}
+
+@media (max-width: $increment * 499) {
+  .site-content__tweets {
+    right: 0;
+  }
+
+  .site-content__people {
+    display: none;
+  }
 }

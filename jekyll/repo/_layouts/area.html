@@ -15,7 +15,7 @@ layout: default
         </a>
     </div>
     <div class="site-content__people">
-        <h2>Politicians tweeting here:</h2>
+        <h2>Politicians tweeting here</h2>
         {% for politician in page.politicians %}
         {% if politician.screen_name %}
           <div class="person">
@@ -25,7 +25,7 @@ layout: default
         {% endif %}
         {% endfor %}
 
-        <h2>Politicians not on Twitter</h2>
+        <h2>Other politicians here</h2>
 
         {% for politician in page.politicians %}
         {% unless politician.screen_name %}
@@ -34,9 +34,11 @@ layout: default
             <input type="hidden" name="submission[person_id]" value="{{ politician.id }}">
             <h3>{{ politician.name }}</h3>
             <p>
-                <label for="id_username_{{ politician.id }}">Add this person’s Twitter username:</label>
-                <input id="id_username_{{ politician.id }}" class="form-control" type="text" name="submission[twitter]" placeholder="@username">
-                <button type="submit" class="button">Save</button>
+                <label for="id_username_{{ politician.id }}">Add a Twitter username:</label>
+                <span class="input-append">
+                    <input id="id_username_{{ politician.id }}" class="form-control" type="text" name="submission[twitter]" placeholder="@username">
+                    <button type="submit" class="button">Add</button>
+                </span>
             </p>
         </form>
         {% endunless %}

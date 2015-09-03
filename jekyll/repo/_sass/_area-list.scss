@@ -17,5 +17,21 @@
             background-color: $color-blue-500;
             color: #fff;
         }
+
+        &:last-child {
+          border-bottom: none;
+        }
     }
+}
+
+@media (max-width: $increment * 699) {
+  .area-list {
+    border-right: none;
+    background-color: mix(#fff, $color-bluegrey-50, 50%);
+    border-bottom: 1px solid $color-bluegrey-100;
+
+    a {
+      padding: 0.6em 1em;
+    }
+  }
 }
