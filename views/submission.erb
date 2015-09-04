@@ -1,5 +1,5 @@
 <ul>
-    <li>Person: <%= submission.person_id %></li>
+    <li>Person: <%= submission.name %></li>
     <li>Twitter: <%= submission.twitter %></li>
 </ul>
 <form action="<%= url "/submissions/#{submission.id}/moderate" %>" method="post">
