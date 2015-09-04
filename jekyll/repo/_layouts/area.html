@@ -20,7 +20,7 @@ layout: default
         {% if politician.screen_name %}
           <div class="person">
             <h3>{{ politician.name }}</h3>
-            <p><a href="{{ politician.screen_name }}">@{{ politician.screen_name | replace: "@", "" | replace: "http://twitter.com/", "" | replace: "https://twitter.com/", "" }}</a></p>
+            <p><a href="https://twitter.com/{{ politician.screen_name }}">@{{ politician.screen_name | replace: "@", "" | replace: "http://twitter.com/", "" | replace: "https://twitter.com/", "" }}</a></p>
           </div>
         {% endif %}
         {% endfor %}
