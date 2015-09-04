@@ -58,7 +58,13 @@ class FetchDataJob
       area[:list_slug] = list.slug
 
       list_members = area[:politicians].map { |p| p[:twitter] }.compact
-      client.add_list_members(list, list_members)
+      list_members.each do |member|
+        begin
+          client.add_list_member(list, member)
+        rescue Twitter::Error::Forbidden
+          next
+        end
+      end
 
       area
     end
