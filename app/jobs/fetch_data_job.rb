@@ -61,7 +61,7 @@ class FetchDataJob
       list_members.each do |member|
         begin
           client.add_list_member(list, member)
-        rescue Twitter::Error::Forbidden
+        rescue Twitter::Error::Forbidden, Twitter::Error::NotFound
           next
         end
       end
