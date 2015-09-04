@@ -9,7 +9,10 @@ class FetchDataJob
   def perform(site_id)
     @site = Site[site_id]
 
-    areas = parse_areas_from_csv(site.csv)
+    csv = site.csv.map(&:to_hash).uniq { |person| person['id'] }
+    csv = csv.reject { |row| row['end_date'] }
+
+    areas = parse_areas_from_csv(csv)
     areas = create_lists_for_areas(areas)
     create_all_list(site.csv)
 
@@ -27,12 +30,21 @@ class FetchDataJob
   end
 
   def parse_areas_from_csv(csv)
+    raise OcdDivisionId::InvalidDivisionId unless site.name == 'Australia (House of Representatives)'
+    australia_csv = CSV.parse(open('country-au.csv').read, headers: true)
+    australia = {}
+    australia_csv.each do |row|
+      australia[row['id']] = row['name']
+    end
     area_ids = csv.map { |row| OcdDivisionId.new(row['area_id']) }
     id_set = OcdDivsionIdSet.new(*area_ids)
-    grouping = id_set.common_type
-    areas = id_set.map { |id| { name: id.id_for(grouping) } }
+    # grouping = id_set.common_type
+    grouping = :state
+    areas = id_set.map { |id| australia[id.id_for(grouping)] }.compact.uniq
+    areas = areas.map { |a| { name: a } }
     csv.each do |row|
-      area = areas.find { |a| a[:name] == OcdDivisionId.new(row['area_id']).id_for(grouping) }
+      area = areas.find { |a| a[:name] == australia[OcdDivisionId.new(row['area_id']).id_for(grouping)] }
+      next unless area
       area[:politicians] ||= []
       area[:politicians] << {
         id: row['id'],
@@ -75,11 +87,15 @@ class FetchDataJob
       area[:list_slug] = list.slug
 
       list_members = area[:politicians].map { |p| p[:twitter] }.compact
-      list_members.each do |member|
-        begin
-          client.add_list_member(list, member)
-        rescue Twitter::Error::Forbidden, Twitter::Error::NotFound
-          next
+      begin
+        client.add_list_members(list, list_members)
+      rescue Twitter::Error::Forbidden, Twitter::Error::NotFound
+        list_members.each do |member|
+          begin
+            client.add_list_member(list, member)
+          rescue Twitter::Error::Forbidden, Twitter::Error::NotFound
+            next
+          end
         end
       end
 

@@ -51,7 +51,6 @@ class OcdDivsionIdSet
     each { |id| known_types.push(*id.types.keys) }
     known_types.uniq.reverse.find do |type|
       groups = group_by { |id| id.id_for(type) }
-      next if groups.keys.any?(&:nil?)
       groups.values.any? { |members| members.length > 1 }
     end
   end
