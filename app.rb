@@ -132,3 +132,7 @@ post '/submissions/:id/moderate' do
   end
   redirect to('/')
 end
+
+post '/event_handler' do
+  Site.each { |site| FetchDataJob.perform_async(site.id) }
+end
