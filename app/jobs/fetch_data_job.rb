@@ -25,10 +25,10 @@ class FetchDataJob
   end
 
   def parse_areas_from_csv(csv)
-    areas = csv.map { |r| r['area'] }.compact.uniq
+    areas = csv.map { |r| r['area'].strip }.compact.uniq
     areas = areas.map { |a| { name: a } }
     csv.each do |row|
-      area = areas.find { |a| a[:name] == row['area'] }
+      area = areas.find { |a| a[:name] == row['area'].strip }
       area[:politicians] ||= []
       area[:politicians] << {
         id: row['id'],
