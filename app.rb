@@ -91,8 +91,12 @@ post '/sites' do
     legislature = country[:legislatures].find do |legislature|
       legislature[:slug] == legislature_slug
     end
+    name = country[:name]
+    if country[:legislatures].length > 1
+      name = "#{name} (#{legislature[:name]})"
+    end
     site = current_user.add_site(
-      name: "#{country[:name]} #{legislature[:name]}",
+      name: name,
       slug: [country[:slug], legislature[:slug]].join('_'),
       latest_term_csv: legislature[:legislative_periods].first[:csv]
     )
