@@ -83,21 +83,26 @@ before '/sites*' do
 end
 
 post '/sites' do
-  country_slug, legislature_slug = params[:country_legislature].split(':')
-  country = settings.countries.find do |country|
-    country[:slug] == country_slug
+  begin
+    country_slug, legislature_slug = params[:country_legislature].split(':')
+    country = settings.countries.find do |country|
+      country[:slug] == country_slug
+    end
+    legislature = country[:legislatures].find do |legislature|
+      legislature[:slug] == legislature_slug
+    end
+    site = current_user.add_site(
+      name: "#{country[:name]} #{legislature[:name]}",
+      slug: [country[:slug], legislature[:slug]].join('_'),
+      latest_term_csv: legislature[:legislative_periods].first[:csv]
+    )
+    FetchDataJob.perform_async(site.id)
+    flash[:notice] = 'Your See Politicians Tweet app is being built'
+    redirect to('/')
+  rescue Sequel::UniqueConstraintViolation
+    flash[:alert] = 'There is already a site for this legislature'
+    redirect to('/')
   end
-  legislature = country[:legislatures].find do |legislature|
-    legislature[:slug] == legislature_slug
-  end
-  site = current_user.add_site(
-    name: "#{country[:name]} #{legislature[:name]}",
-    slug: [country[:slug], legislature[:slug]].join('_'),
-    latest_term_csv: legislature[:legislative_periods].first[:csv]
-  )
-  FetchDataJob.perform_async(site.id)
-  flash[:notice] = 'Your See Politicians Tweet app is being built'
-  redirect to('/')
 end
 
 post '/sites/:id/rebuild' do
