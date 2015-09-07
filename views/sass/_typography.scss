@@ -1,3 +1,15 @@
+body {
+  line-height: 1.388888889em; //25px
+
+  @media (min-width: $medium_screen) {
+      line-height: 1.5em; //27px
+  }
+}
+
+h1, h2, h3, h4, h5 {
+  line-height: 1.1em;
+}
+
 a {
   color: $color-blue-600;
 
@@ -7,4 +19,12 @@ a {
     text-decoration: none;
     outline: none;
   }
+}
+
+.text-center {
+    text-align: center;
+}
+
+p.lead {
+    font-size: 1.2em;
 }
