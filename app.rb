@@ -135,4 +135,5 @@ end
 
 post '/event_handler' do
   Site.each { |site| FetchDataJob.perform_async(site.id) }
+  'ok'
 end
