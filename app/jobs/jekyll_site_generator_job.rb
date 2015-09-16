@@ -19,14 +19,8 @@ class JekyllSiteGeneratorJob
       create_or_update_repo(dir)
 
       template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
-      config_yml = template.render(
-        self,
-        site: site,
-        submission_url: ENV['SUBMISSION_URL']
-      )
-      File.open(File.join(dir, '_config.yml'), 'w') do |f|
-        f.puts(config_yml)
-      end
+      config_yml = template.render(self, site: site)
+      File.write(File.join(dir, '_config.yml'), config_yml)
 
       FileUtils.rm_rf(File.join(dir, '_areas'))
       FileUtils.mkdir_p(File.join(dir, '_areas'))

@@ -31,6 +31,10 @@ module SeePoliticiansTweet
       def twitter_client
         user.twitter_client
       end
+
+      def submission_url
+        ENV['SUBMISSION_URL']
+      end
     end
   end
 end
