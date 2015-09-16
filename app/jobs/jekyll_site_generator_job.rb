@@ -27,9 +27,8 @@ class JekyllSiteGeneratorJob
 
       template = Tilt.new(File.join(templates_dir, 'area.html.erb'))
       areas.each do |area|
-        File.open(File.join(dir, '_areas', "#{area['list_slug']}.html"), 'w') do |f|
-          f.puts(template.render(self, area))
-        end
+        area_file = File.join(dir, '_areas', "#{area['list_slug']}.html")
+        File.write(area_file, template.render(self, area))
       end
 
       `git add .`
