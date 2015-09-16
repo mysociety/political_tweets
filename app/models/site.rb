@@ -27,6 +27,10 @@ module SeePoliticiansTweet
         org, repo = github.split('/')
         "https://#{org}.github.io/#{repo}"
       end
+
+      def twitter_client
+        user.twitter_client
+      end
     end
   end
 end

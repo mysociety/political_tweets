@@ -17,16 +17,7 @@ class FetchDataJob
     create_all_list(site.csv)
 
     # Generate the static site
-    JekyllSiteGeneratorJob.perform_async(site.id, client.user.screen_name, areas)
-  end
-
-  def client
-    @client ||= Twitter::REST::Client.new do |config|
-      config.consumer_key        = ENV['TWITTER_CONSUMER_KEY']
-      config.consumer_secret     = ENV['TWITTER_CONSUMER_SECRET']
-      config.access_token        = site.user.token
-      config.access_token_secret = site.user.secret
-    end
+    JekyllSiteGeneratorJob.perform_async(site.id, site.twitter_client.user.screen_name, areas)
   end
 
   def parse_areas_from_csv(csv)
@@ -69,7 +60,7 @@ class FetchDataJob
   end
 
   def create_lists_for_areas(areas)
-    all_lists = client.lists
+    all_lists = site.twitter_client.lists
     areas.map do |area|
       # Twitter list names must be 25 chars or less
       name = area[:name]
@@ -80,7 +71,7 @@ class FetchDataJob
       list = all_lists.find { |l| l.name == name }
 
       unless list
-        list = client.create_list(name)
+        list = site.twitter_client.create_list(name)
       end
 
       area[:list_id] = list.id
@@ -88,11 +79,11 @@ class FetchDataJob
 
       list_members = area[:politicians].map { |p| p[:twitter] }.compact
       begin
-        client.add_list_members(list, list_members)
+        site.twitter_client.add_list_members(list, list_members)
       rescue Twitter::Error::Forbidden, Twitter::Error::NotFound
         list_members.each do |member|
           begin
-            client.add_list_member(list, member)
+            site.twitter_client.add_list_member(list, member)
           rescue Twitter::Error::Forbidden, Twitter::Error::NotFound
             next
           end
@@ -105,13 +96,13 @@ class FetchDataJob
 
   def create_all_list(csv)
     # Create a list with all members in
-    all_list = client.lists.find { |list| list.name == 'All' }
+    all_list = site.twitter_client.lists.find { |list| list.name == 'All' }
     unless all_list
-      all_list = client.create_list('All')
+      all_list = site.twitter_client.create_list('All')
     end
     all_twitter_handles = csv.map do|row|
       row['twitter'] if row['twitter']
     end.compact
-    client.add_list_members(all_list, all_twitter_handles)
+    site.twitter_client.add_list_members(all_list, all_twitter_handles)
   end
 end
