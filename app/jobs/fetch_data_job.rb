@@ -17,7 +17,7 @@ class FetchDataJob
     create_all_list(site.csv)
 
     # Generate the static site
-    JekyllSiteGeneratorJob.perform_async(site.id, site.twitter_client.user.screen_name, areas)
+    JekyllSiteGeneratorJob.perform_async(site.id, areas)
   end
 
   def parse_areas_from_csv(csv)

@@ -8,9 +8,8 @@ class JekyllSiteGeneratorJob
   attr_reader :site
   attr_reader :areas
 
-  def perform(site_id, list_owner_screen_name, areas)
+  def perform(site_id, areas)
     @site = Site[site_id]
-    @list_owner_screen_name = list_owner_screen_name
     @areas = areas
     generate
   end
@@ -23,7 +22,6 @@ class JekyllSiteGeneratorJob
       config_yml = template.render(
         self,
         site: site,
-        list_owner_screen_name: @list_owner_screen_name,
         submission_url: ENV['SUBMISSION_URL']
       )
       File.open(File.join(dir, '_config.yml'), 'w') do |f|
