@@ -98,7 +98,7 @@ post '/sites' do
     site = current_user.add_site(
       name: name,
       slug: [country[:slug], legislature[:slug]].join('_'),
-      latest_term_csv: legislature[:legislative_periods].first[:csv]
+      latest_term_csv: term_csv(legislature[:legislative_periods].first[:csv])
     )
     FetchDataJob.perform_async(site.id)
     flash[:notice] = 'Your See Politicians Tweet app is being built'
