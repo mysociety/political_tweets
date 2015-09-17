@@ -1,11 +1,11 @@
 ---
 layout: area
-name: <%= name %>
-list_slug: <%= list_slug %>
+name: <%= area.name %>
+list_slug: <%= area.twitter_list_slug %>
 politicians:
 <% politicians.each do |politician| %>
-- id: <%= politician['id'] %>
-  name: <%= politician['name'] %>
-  screen_name: <%= politician['twitter'] %>
+- id: <%= politician[:id] %>
+  name: <%= politician[:name] %>
+  screen_name: <%= politician[:twitter] %>
 <% end %>
 ---

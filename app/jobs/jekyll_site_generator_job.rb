@@ -6,11 +6,9 @@ class JekyllSiteGeneratorJob
   include Github
 
   attr_reader :site
-  attr_reader :areas
 
-  def perform(site_id, areas)
+  def perform(site_id)
     @site = Site[site_id]
-    @areas = areas
     generate
   end
 
@@ -26,9 +24,11 @@ class JekyllSiteGeneratorJob
       FileUtils.mkdir_p(File.join(dir, '_areas'))
 
       template = Tilt.new(File.join(templates_dir, 'area.html.erb'))
-      areas.each do |area|
-        area_file = File.join(dir, '_areas', "#{area['list_slug']}.html")
-        File.write(area_file, template.render(self, area))
+      site.areas.each do |area|
+        politicians = site.grouped_areas[area.name]
+        result = template.render(self, area: area, politicians: politicians)
+        area_file = File.join(dir, '_areas', "#{area.twitter_list_slug}.html")
+        File.write(area_file, result)
       end
 
       `git add .`
