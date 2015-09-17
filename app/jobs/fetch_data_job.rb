@@ -9,8 +9,7 @@ class FetchDataJob
   def perform(site_id)
     @site = Site[site_id]
 
-    csv = site.csv.map(&:to_hash).uniq { |person| person['id'] }
-    csv = csv.reject { |row| row['end_date'] }
+    csv = site.csv.reject { |row| row['end_date'] }
 
     areas = parse_areas_from_csv(csv)
     areas = create_lists_for_areas(areas)

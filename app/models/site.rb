@@ -18,6 +18,10 @@ module SeePoliticiansTweet
         @csv_data ||= open(latest_term_csv).read
       end
 
+      def unique_people
+        csv.map(&:to_hash).uniq { |person| person[:id] }
+      end
+
       def url
         org, repo = github.split('/')
         "https://#{org}.github.io/#{repo}"
@@ -32,7 +36,7 @@ module SeePoliticiansTweet
       end
 
       def areas
-        csv.map(&:to_hash).group_by { |person| person[:area] }
+        unique_people.group_by { |person| person[:area] }
       end
     end
   end
