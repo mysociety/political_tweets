@@ -5,6 +5,7 @@ module SeePoliticiansTweet
     class Site < Sequel::Model
       many_to_one :user
       one_to_many :submissions
+      one_to_many :areas
 
       def active?
         !github.nil?
