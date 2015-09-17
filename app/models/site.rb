@@ -11,7 +11,7 @@ module SeePoliticiansTweet
       end
 
       def csv
-        @csv ||= CSV.parse(csv_data, headers: true)
+        @csv ||= CSV.parse(csv_data, headers: true, header_converters: :symbol)
       end
 
       def csv_data
@@ -29,6 +29,10 @@ module SeePoliticiansTweet
 
       def submission_url
         ENV['SUBMISSION_URL']
+      end
+
+      def areas
+        csv.map(&:to_hash).group_by { |person| person[:area] }
       end
     end
   end
