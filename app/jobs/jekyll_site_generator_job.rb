@@ -9,33 +9,45 @@ class JekyllSiteGeneratorJob
 
   def perform(site_id)
     @site = Site[site_id]
-    generate
+    if Sinatra::Application.use_github?
+      with_git_repo { |repo| update_templates(repo) }
+    else
+      FileUtils.mkdir_p('public/jekyll')
+      update_templates("public/jekyll/#{site.slug}")
+    end
   end
 
-  def generate
+  def with_git_repo
     with_tmp_dir do |dir|
       create_or_update_repo(dir)
 
-      template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
-      config_yml = template.render(self, site: site)
-      File.write(File.join(dir, '_config.yml'), config_yml)
-
-      FileUtils.rm_rf(File.join(dir, '_areas'))
-      FileUtils.mkdir_p(File.join(dir, '_areas'))
-
-      template = Tilt.new(File.join(templates_dir, 'area.html.erb'))
-      site.areas.each do |area|
-        politicians = site.grouped_areas[area.name]
-        result = template.render(self, area: area, politicians: politicians)
-        area_file = File.join(dir, '_areas', "#{area.twitter_list_slug}.html")
-        File.write(area_file, result)
-      end
+      yield(dir)
 
       `git add .`
       git_config = "-c user.name='#{github_client.login}' -c user.email='#{github_client.emails.first[:email]}'"
       message = "Automated commit for #{site.name}"
       `git #{git_config} commit --message="#{message}"`
       `git push --quiet origin gh-pages`
+    end
+  end
+
+  def update_templates(dir)
+    # Update files in repo
+    FileUtils.cp_r(repo_dir + '/.', dir)
+
+    template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
+    config_yml = template.render(self, site: site)
+    File.write(File.join(dir, '_config.yml'), config_yml)
+
+    FileUtils.rm_rf(File.join(dir, '_areas'))
+    FileUtils.mkdir_p(File.join(dir, '_areas'))
+
+    template = Tilt.new(File.join(templates_dir, 'area.html.erb'))
+    site.areas.each do |area|
+      politicians = site.grouped_areas[area.name]
+      result = template.render(self, area: area, politicians: politicians)
+      area_file = File.join(dir, '_areas', "#{area.twitter_list_slug}.html")
+      File.write(area_file, result)
     end
   end
 
@@ -63,9 +75,6 @@ class JekyllSiteGeneratorJob
       `git symbolic-ref HEAD refs/heads/gh-pages`
       `git remote add origin #{clone_url(repo)}`
     end
-
-    # Update files in repo
-    FileUtils.cp_r(repo_dir + '/.', dir)
   end
 
   def with_tmp_dir(&block)

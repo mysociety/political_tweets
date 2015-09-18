@@ -25,6 +25,7 @@ configure do
     countries_json = open('https://raw.githubusercontent.com/everypolitician/everypolitician-data/master/countries.json').read
     JSON.parse(countries_json, symbolize_names: true)
   }
+  set :use_github, production?
 end
 
 require 'helpers'
