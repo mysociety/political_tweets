@@ -1,4 +1,5 @@
 require 'csv'
+require 'ocd_division_id'
 
 module SeePoliticiansTweet
   module Models
