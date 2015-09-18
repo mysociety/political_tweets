@@ -44,7 +44,7 @@ module SeePoliticiansTweet
 
       def create_or_update_areas
         grouped_areas.each do |name, politicians|
-          area = areas_dataset.find_or_create(name: name)
+          area = Area.find_or_create(site_id: id, name: name)
 
           list_members = politicians.map { |p| p[:twitter] }.compact
           begin
