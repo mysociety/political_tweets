@@ -3,6 +3,10 @@ module SeePoliticiansTweet
     class Area < Sequel::Model
       many_to_one :site
 
+      def slug
+        name.parameterize
+      end
+
       # Twitter list names must be 25 chars or less
       def twitter_list_name
         name[0...25]

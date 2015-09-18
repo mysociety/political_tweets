@@ -46,7 +46,7 @@ class JekyllSiteGeneratorJob
     site.areas.each do |area|
       politicians = site.grouped_areas[area.name]
       result = template.render(self, area: area, politicians: politicians)
-      area_file = File.join(dir, '_areas', "#{area.twitter_list_slug}.html")
+      area_file = File.join(dir, '_areas', "#{area.slug}.html")
       File.write(area_file, result)
     end
   end
