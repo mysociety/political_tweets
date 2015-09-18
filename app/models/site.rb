@@ -47,6 +47,8 @@ module SeePoliticiansTweet
         grouped_areas.each do |name, politicians|
           area = Area.find_or_create(site_id: id, name: name)
 
+          next unless Sinatra::Application.use_twitter?
+
           list_members = politicians.map { |p| p[:twitter] }.compact
           begin
             twitter_client.add_list_members(area.twitter_list, list_members)
@@ -64,6 +66,7 @@ module SeePoliticiansTweet
 
       # Create a list with all members in
       def create_or_update_all_list
+        return unless Sinatra::Application.use_twitter?
         all_twitter_handles = unique_people.map { |row| row[:twitter] }.compact
         twitter_client.add_list_members(all_list, all_twitter_handles)
       end

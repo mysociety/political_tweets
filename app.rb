@@ -26,6 +26,7 @@ configure do
     JSON.parse(countries_json, symbolize_names: true)
   }
   set :use_github, production?
+  set :use_twitter, production?
 end
 
 require 'helpers'

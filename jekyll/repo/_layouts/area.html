@@ -2,6 +2,7 @@
 layout: default
 ---
 <div class="site-content">
+  {% if page.list_slug %}
     <div class="site-content__tweets">
         <a class="twitter-timeline"
           data-dnt="true"
@@ -14,6 +15,9 @@ layout: default
           <span class="twitter-timeline__loading">Loading tweets…</span>
         </a>
     </div>
+  {% else %}
+    <p>No Twitter list exists for this area.</p>
+  {% endif %}
     <div class="site-content__people">
         <h2>Politicians tweeting here</h2>
         {% for politician in page.politicians %}
