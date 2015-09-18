@@ -14,5 +14,10 @@ module SeePoliticiansTweet
     def everypolitician
       @everypolitician ||= Faraday.new(ENV['EVERYPOLITICIAN_URL'])
     end
+
+    def term_csv(csv)
+      'https://raw.githubusercontent.com/' \
+        "everypolitician/everypolitician-data/master/#{csv}"
+    end
   end
 end
