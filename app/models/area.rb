@@ -9,13 +9,13 @@ module SeePoliticiansTweet
       end
 
       def twitter_list
-        site.twitter_client.list(twitter_list_id)
-      rescue Twitter::Error::NotFound, Twitter::Error::BadRequest
-        list = site.twitter_client.create_list(twitter_list_name)
-        self.twitter_list_id = list.id
-        self.twitter_list_slug = list.slug
-        save
-        list
+        if !twitter_list_id
+          list = site.twitter_client.create_list(twitter_list_name)
+          self.twitter_list_id = list.id
+          self.twitter_list_slug = list.slug
+          save
+        end
+        twitter_list_id
       end
     end
   end
