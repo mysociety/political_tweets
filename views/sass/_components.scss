@@ -97,12 +97,47 @@
   h1 {
     float: left;
     font-size: inherit;
+    line-height: inherit;
     margin: 0;
   }
 
   a {
     float: right;
   }
+}
+
+.page-section {
+  padding: 1.5em 0;
+  border-bottom: 1px solid $color-bluegrey-100;
+
+  @media (min-width: $medium_screen) and (min-height: 600px) {
+    padding: 2em 0;
+  }
+
+  @media (min-width: $medium_screen) and (min-height: 700px) {
+    padding: 2.5em 0;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    margin-bottom: 1.2em;
+  }
+}
+
+.hero {
+  @extend .page-section;
+  text-align: center;
 }
 
 .flash {
@@ -113,10 +148,58 @@
   @include box-shadow(0 1px 3px rgba(0,0,0,0.2));
 }
 
-.login-prompt {
-  padding: 2em;
-  margin-top: 1.5em;
-  border-radius: 3px;
-  border: 2px dashed $color-bluegrey-100;
-  text-align: center;
+.example-site {
+  display: inline-block;
+  width: 10em;
+  background: #fff;
+  padding: 1.5em;
+  margin: 0em 0.5em 1em 0.5em;
+  @include box-shadow(0 1px 3px rgba(0,0,0,0.2));
+  text-decoration: none;
+
+  &:hover, &:focus {
+    position: relative;
+    top: -1px;
+    @include box-shadow(0 2px 6px rgba(0,0,0,0.1));
+  }
+
+  & > :first-child {
+    margin-top: 0;
+  }
+
+  & > :last-child {
+    margin-bottom: 0;
+  }
+
+  h3 {
+    margin-bottom: 0.5em;
+  }
+
+  p {
+    color: $color-bluegrey-400;
+    font-size: 0.8em;
+    line-height: 1.3em;
+  }
+}
+
+.homepage__requirements {
+  position: relative;
+  background-color: #fffcdd;
+  padding: 1.5em 1.5em 1.5em 3em;
+  text-align: left;
+  max-width: 27em;
+  margin: 2em auto;
+  @include box-shadow(0 1px 1px rgba(0,0,0,0.2));
+
+  li + li {
+    margin-top: 0.5em;
+  }
+}
+
+.homepage__smallprint {
+  font-size: 0.8em;
+  color: $color-bluegrey-400;
+  max-width: 27em * (1/0.8);
+  margin: 3em auto 0 auto;
+  text-align: left;
 }

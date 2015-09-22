@@ -17,9 +17,44 @@
 
 <% else %>
 
-    <p class="login-prompt">
-        <a href="<%= url '/auth/twitter' %>">Log in with Twitter</a>
-        to create your first site.
-    </p>
+    <div class="hero">
+        <h1>Ever wanted a 360° view of what all the politicians in your area are&nbsp;saying?</h1>
+        <p>
+          If you live in an area with more than one representative,
+          See Politicians Tweet allows you to collect their tweets together,
+          displaying them in a single timeline for easy&nbsp;viewing.
+        </p>
+    </div>
+
+    <% if Site.active.count >= 3 %>
+    <div class="page-section text-center">
+        <h2>See it in action!</h2>
+        <% Site.active.limit(3).each do |site| %>
+        <a class="example-site" href="<%= site.url %>">
+            <h3><%= site.name %></h3>
+            <%# <p>60 politicians across 45 areas</p> %>
+        </a>
+        <% end %>
+    </div>
+    <% end %>
+
+    <div class="page-section text-center">
+        <h2>Can I set up a See Politicians Tweet site for my region?</h2>
+        <ol class="homepage__requirements">
+            <li>Is your area represented at a national level by more than one politician?</li>
+            <li>Are you happy to take ownership of your new site, monitoring the occasional user submission?</li>
+        </ol>
+        <h3>… If yes, then you can!</h3>
+        <p>
+            <a class="button button--primary" href="<%= url '/auth/twitter' %>">Log in with Twitter to start</a>
+        </p>
+        <p class="homepage__smallprint">
+            Note: See Politicians Tweet works by creating a bunch of
+            Twitter Lists in the account you use to sign in. If you’d
+            like to keep these lists separate from your personal
+            Twitter account, we recommend setting up a new account
+            and signing in with that.
+        </p>
+    </div>
 
 <% end %>

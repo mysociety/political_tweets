@@ -41,3 +41,15 @@ $color-orange-600: #FB8C00;
 $color-orange-700: #F57C00;
 $color-orange-800: #EF6C00;
 $color-orange-900: #E65100;
+
+$border_radius: 5px;
+
+$size_font-base: 18px;
+
+$giant_screen: 67.5em;
+$large_screen: 56em;
+$medium_screen: 44em;
+$high_dpi_screen: '-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi';
+
+$large_screen_max: $giant_screen - (1em * (1px / $size_font-base));
+$medium_screen_max: $large_screen - (1em * (1px / $size_font-base));

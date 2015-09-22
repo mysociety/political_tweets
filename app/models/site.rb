@@ -80,6 +80,12 @@ module SeePoliticiansTweet
         save
         all_list
       end
+
+      dataset_module do
+        def active
+          exclude(github: nil)
+        end
+      end
     end
   end
 end
