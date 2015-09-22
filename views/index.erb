@@ -26,21 +26,17 @@
         </p>
     </div>
 
+    <% if Site.active.count >= 3 %>
     <div class="page-section text-center">
         <h2>See it in action!</h2>
-        <a class="example-site" href="#">
-            <h3>Australia</h3>
-            <p>?? politicians across ?? areas</p>
+        <% Site.active.limit(3).each do |site| %>
+        <a class="example-site" href="<%= site.url %>">
+            <h3><%= site.name %></h3>
+            <%# <p>60 politicians across 45 areas</p> %>
         </a>
-        <a class="example-site" href="#">
-            <h3>Estonia</h3>
-            <p>?? politicians across ?? areas</p>
-        </a>
-        <a class="example-site" href="#">
-            <h3>Wales</h3>
-            <p>60 politicians across 45 areas</p>
-        </a>
+        <% end %>
     </div>
+    <% end %>
 
     <div class="page-section text-center">
         <h2>Can I set up a See Politicians Tweet site for my region?</h2>
