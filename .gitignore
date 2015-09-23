@@ -3,3 +3,5 @@ db/*.sqlite
 .bundle/
 .vagrant/
 .sass-cache/
+coverage/
+generated_jekyll_sites/

@@ -23,14 +23,8 @@ class OcdDivisionId
       division_id.split('/').first == 'ocd-division'
   end
 
-  def id_for(type)
-    return unless types.keys.include?(type)
-    id = 'ocd-division'
-    types.each do |type_name, type_id|
-      id += "/#{[type_name, type_id].join(':')}"
-      break if type_name == type
-    end
-    id
+  def level(number)
+    'ocd-division/' + parts[0..number].join('/')
   end
 end
 
@@ -45,13 +39,15 @@ class OcdDivsionIdSet
     @ids.each { |id| yield id }
   end
 
+  def max_level
+    max { |a, b| a.parts.length <=> b.parts.length }.parts.length - 1
+  end
+
   # Need to find the common type which all ids have
-  def common_type
-    known_types = []
-    each { |id| known_types.push(*id.types.keys) }
-    known_types.uniq.reverse.find do |type|
-      groups = group_by { |id| id.id_for(type) }
-      groups.values.any? { |members| members.length > 1 }
+  def common_level
+    max_level.downto(0) do |level|
+      groups = group_by { |id| id.level(level) }
+      return level if groups.values.any? { |members| members.length > 1 }
     end
   end
 end
