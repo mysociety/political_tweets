@@ -1,38 +1,22 @@
-require 'github'
 require 'fileutils'
 
 class JekyllSiteGeneratorJob
   include Sidekiq::Worker
-  include Github
 
   attr_reader :site
 
-  def perform(site_id)
+  def perform(site_id, local_jekyll_path = 'generated_jekyll_sites/')
     @site = Site[site_id]
     if Sinatra::Application.use_github?
-      with_git_repo { |repo| update_templates(repo) }
+      site.with_git_repo { |repo| update_templates(repo) }
     else
-      FileUtils.mkdir_p('public/jekyll')
-      update_templates("public/jekyll/#{site.slug}")
+      FileUtils.mkdir_p(local_jekyll_path)
+      update_templates(File.join(local_jekyll_path, site.slug))
     end
   end
 
-  def with_git_repo
-    with_tmp_dir do |dir|
-      create_or_update_repo(dir)
-
-      yield(dir)
-
-      `git add .`
-      git_config = "-c user.name='#{github_client.login}' -c user.email='#{github_client.emails.first[:email]}'"
-      message = "Automated commit for #{site.name}"
-      `git #{git_config} commit --message="#{message}"`
-      `git push --quiet origin gh-pages`
-    end
-  end
-
+  # Update files in repo
   def update_templates(dir)
-    # Update files in repo
     FileUtils.cp_r(repo_dir + '/.', dir)
 
     template = Tilt.new(File.join(templates_dir, '_config.yml.erb'))
@@ -51,43 +35,11 @@ class JekyllSiteGeneratorJob
     end
   end
 
-  def create_or_update_repo(dir)
-    org = Sinatra::Application.github_organization
-    repo_name = site.slug
-    if site.github
-      github_repository = site.github
-    else
-      github_repository = "#{org}/#{repo_name}"
-      site.github = github_repository
-      site.save
-    end
-    if github_client.repository?(github_repository)
-      repo = github_client.repository(github_repository)
-      `git clone --quiet #{clone_url(repo)} .`
-    else
-      # Repository doesn't exist yet
-      repo = github_client.create_repository(
-        repo_name,
-        organization: org,
-        homepage: "https://#{org}.github.io/#{repo_name}"
-      )
-      `git init`
-      `git symbolic-ref HEAD refs/heads/gh-pages`
-      `git remote add origin #{clone_url(repo)}`
-    end
-  end
-
-  def with_tmp_dir(&block)
-    Dir.mktmpdir do |tmp_dir|
-      Dir.chdir(tmp_dir, &block)
-    end
-  end
-
   def templates_dir
-    File.expand_path(File.join('..', '..', '..', 'jekyll', 'templates'), __FILE__)
+    File.expand_path(File.join('../../../jekyll/templates'), __FILE__)
   end
 
   def repo_dir
-    File.expand_path(File.join('..', '..', '..', 'jekyll', 'repo'), __FILE__)
+    File.expand_path(File.join('../../../jekyll/repo'), __FILE__)
   end
 end

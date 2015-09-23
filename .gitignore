@@ -4,3 +4,4 @@ db/*.sqlite
 .vagrant/
 .sass-cache/
 coverage/
+generated_jekyll_sites/

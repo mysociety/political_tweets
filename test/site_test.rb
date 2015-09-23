@@ -23,15 +23,6 @@ describe Site do
     end
   end
 
-  describe '#url' do
-    it 'creates a url from the github repo' do
-      subject.github = 'foo/bar'
-      assert_equal 'https://foo.github.io/bar', subject.url
-      subject.github = 'baz/qux'
-      assert_equal 'https://baz.github.io/qux', subject.url
-    end
-  end
-
   describe '#twitter_client' do
     it 'is an instance of Twitter::REST::Client' do
       assert subject.twitter_client.instance_of?(Twitter::REST::Client)
@@ -52,5 +43,21 @@ describe Site do
       end
       twitter_client.verify
     end
+  end
+
+  describe '#github_repository' do
+    it 'combines github_organization and slug to get repo' do
+      site = Site.new
+      site.github_organization = 'foo'
+      site.slug = 'bar'
+      assert_equal 'foo/bar', site.github_repository
+    end
+  end
+
+  it 'has an active? method' do
+    site = Site.new
+    assert !site.active?
+    site.url = 'http://foo.com/bar'
+    assert site.active?
   end
 end

@@ -44,13 +44,4 @@ class AppTest < Minitest::Spec
       assert last_response.body.include?('There is already a site for this legislature')
     end
   end
-
-  describe Site do
-    it 'has an active? method' do
-      site = Site.new
-      assert !site.active?
-      site.github = 'foo/bar'
-      assert site.active?
-    end
-  end
 end

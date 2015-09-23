@@ -1,5 +1,6 @@
 require 'csv'
 require 'ocd_division_id'
+require 'github'
 
 module SeePoliticiansTweet
   module Models
@@ -8,8 +9,14 @@ module SeePoliticiansTweet
       one_to_many :submissions
       one_to_many :areas
 
+      dataset_module do
+        def active
+          exclude(url: nil)
+        end
+      end
+
       def active?
-        !github.nil?
+        !url.nil?
       end
 
       def csv
@@ -26,17 +33,16 @@ module SeePoliticiansTweet
           .reject { |row| row[:end_date] }
       end
 
-      def url
-        org, repo = github.split('/')
-        "https://#{org}.github.io/#{repo}"
-      end
-
       def twitter_client
         user.twitter_client
       end
 
       def submission_url
         ENV['SUBMISSION_URL']
+      end
+
+      def github_repository
+        [github_organization, slug].join('/')
       end
 
       def grouped_areas
@@ -81,10 +87,51 @@ module SeePoliticiansTweet
         all_list
       end
 
-      dataset_module do
-        def active
-          exclude(github: nil)
+      def with_tmp_dir(&block)
+        Dir.mktmpdir do |tmp_dir|
+          Dir.chdir(tmp_dir, &block)
         end
+      end
+
+      def clone_url(repo)
+        repo_clone_url = URI.parse(repo.clone_url)
+        repo_clone_url.user = GitHub.login
+        repo_clone_url.password = GitHub.access_token
+        repo_clone_url
+      end
+
+      def with_git_repo
+        with_tmp_dir do |dir|
+          create_or_update_repo
+          yield(dir)
+          commit_and_push
+        end
+      end
+
+      def create_or_update_repo
+        if GitHub.repository?(github_repository)
+          repo = GitHub.repository(github_repository)
+          `git clone --quiet #{clone_url(repo)} .`
+        else
+          # Repository doesn't exist yet
+          repo = GitHub.create_repository(
+            github_repository,
+            organization: org,
+            homepage: url
+          )
+          `git init`
+          `git symbolic-ref HEAD refs/heads/gh-pages`
+          `git remote add origin #{clone_url(repo)}`
+        end
+      end
+
+      def commit_and_push
+        `git add .`
+        git_config = "-c user.name='#{GitHub.login}' " \
+          "-c user.email='#{GitHub.emails.first[:email]}'"
+        message = 'Automated commit'
+        `git #{git_config} commit --message="#{message}"`
+        `git push --quiet origin gh-pages`
       end
     end
   end
