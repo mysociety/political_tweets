@@ -4,6 +4,9 @@
     <h2 class="site__name">
         <%= site.name %>
     </h2>
+    <% if site.local? %>
+      <p class="site__instructions"><%= erb :local_instructions, locals: { site: site } %></p>
+    <% end %>
     <p class="site__url">
         <a href="<%= site.url %>">
             <%= site.url %>

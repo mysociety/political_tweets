@@ -45,6 +45,10 @@ module SeePoliticiansTweet
         [github_organization, slug].join('/')
       end
 
+      def local?
+        url.start_with?('http://127.0.0.1:4000')
+      end
+
       def grouped_areas
         @grouped_areas ||= unique_people.group_by { |person| person[:area].strip }
       end
