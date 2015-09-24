@@ -120,7 +120,7 @@ end
 
 post '/submissions' do
   submission = Submission.create(params[:submission])
-  redirect submission.site.url + '/submission-success'
+  redirect submission.site.url + '/submission-success.html'
 end
 
 post '/submissions/:id/moderate' do
