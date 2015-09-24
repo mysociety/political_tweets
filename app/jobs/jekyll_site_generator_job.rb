@@ -9,9 +9,13 @@ class JekyllSiteGeneratorJob
     @site = Site[site_id]
     if Sinatra::Application.use_github?
       site.with_git_repo { |repo| update_templates(repo) }
+      site.url = "https://#{site.github_organization}.github.io/#{site.slug}"
+      site.save
     else
       FileUtils.mkdir_p(local_jekyll_path)
       update_templates(File.join(local_jekyll_path, site.slug))
+      site.url = "http://127.0.0.1:4000/#{site.slug}/"
+      site.save
     end
   end
 
