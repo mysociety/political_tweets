@@ -1,6 +1,6 @@
 <ul>
     <li>Person: <%= submission.name %></li>
-    <li>Twitter: <%= submission.twitter %></li>
+    <li>Twitter: <a href="https://twitter.com/<%= submission.twitter %>"><%= submission.twitter %></a></li>
 </ul>
 <form action="<%= url "/submissions/#{submission.id}/moderate" %>" method="post">
     <input class="button button--primary" type="submit" name="action" value="accept">
