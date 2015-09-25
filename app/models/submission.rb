@@ -12,6 +12,12 @@ module SeePoliticiansTweet
         super
         validates_includes ['pending', 'approved', 'rejected'], :status
       end
+
+      dataset_module do
+        def pending
+          where(status: 'pending')
+        end
+      end
     end
   end
 end
