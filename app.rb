@@ -125,12 +125,13 @@ end
 
 post '/submissions/:id/moderate' do
   redirect to('/auth/twitter') if current_user.nil?
+  submission = Submission[params[:id]]
   if params[:action] == 'accept'
-    AcceptSubmissionJob.perform_async(params[:id])
+    submission.update(status: 'approved')
+    AcceptSubmissionJob.perform_async(submission.id)
     flash[:notice] = 'Submission accepted'
   else
-    submission = Submission[params[:id]]
-    submission.delete
+    submission.update(status: 'rejected')
     flash[:notice] = 'Submission rejected'
   end
   redirect to('/')
