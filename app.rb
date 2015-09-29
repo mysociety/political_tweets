@@ -99,7 +99,8 @@ post '/sites' do
     end
     site = current_user.add_site(
       name: name,
-      slug: [country[:slug], legislature[:slug]].join('_'),
+      country_slug: country[:slug],
+      legislature_slug: legislature[:slug],
       github_organization: settings.github_organization,
       latest_term_csv: term_csv(legislature[:legislative_periods].first[:csv])
     )

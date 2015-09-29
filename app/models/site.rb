@@ -41,6 +41,10 @@ module SeePoliticiansTweet
         ENV['SUBMISSION_URL']
       end
 
+      def slug
+        [country_slug, legislature_slug].join('_')
+      end
+
       def github_repository
         [github_organization, slug].join('/')
       end

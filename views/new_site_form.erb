@@ -5,7 +5,7 @@
         <optgroup label="EveryPolitician.org">
           <% settings.countries.each do |country| %>
             <% country[:legislatures].each do |legislature| %>
-              <% next if Site.where(slug: [country[:slug], legislature[:slug]].join('_')).any? %>
+              <% next if Site.where(country_slug: country[:slug], legislature_slug: legislature[:slug]).any? %>
               <option value="<%= country[:slug] %>:<%= legislature[:slug] %>"><%= country[:name] %>: <%= legislature[:name] %></option>
             <% end %>
           <% end %>

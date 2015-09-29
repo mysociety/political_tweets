@@ -2,7 +2,7 @@ require 'test_helper'
 
 describe Site do
   let(:user) { User.create(twitter_uid: 123, token: 'abc', secret: 'foo') }
-  subject { user.add_site(name: 'Test', slug: 'test', latest_term_csv: 'test/fixtures/test.csv') }
+  subject { user.add_site(name: 'Test', country_slug: 'test', legislature_slug: 'legislature', latest_term_csv: 'test/fixtures/test.csv') }
 
   describe '#unique_people' do
     it "doesn't return duplicate people or people with an end_date from the CSV" do
@@ -49,8 +49,9 @@ describe Site do
     it 'combines github_organization and slug to get repo' do
       site = Site.new
       site.github_organization = 'foo'
-      site.slug = 'bar'
-      assert_equal 'foo/bar', site.github_repository
+      site.country_slug = 'bar'
+      site.legislature_slug = 'baz'
+      assert_equal 'foo/bar_baz', site.github_repository
     end
   end
 
