@@ -120,6 +120,7 @@ end
 
 post '/submissions' do
   submission = Submission.create(params[:submission])
+  SendNewSubmissionNotificationJob.perform_async(submission.id, url('/'))
   redirect submission.site.url + '/submission-success.html'
 end
 
