@@ -38,7 +38,7 @@ class AppTest < Minitest::Spec
     end
 
     it "doesn't let you create a country more than once" do
-      s = User[@user_id].add_site(name: 'Test Country', slug: 'Test_Country_Example', latest_term_csv: 'foo/bar.csv')
+      s = User[@user_id].add_site(name: 'Test Country', country_slug: 'Test_Country', legislature_slug: 'Example', latest_term_csv: 'foo/bar.csv')
       post '/sites', { country_legislature: 'Test_Country:Example' }, 'rack.session' => { user_id: @user_id }
       follow_redirect!
       assert last_response.body.include?('There is already a site for this legislature')
