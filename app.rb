@@ -26,7 +26,7 @@ configure do
     JSON.parse(countries_json, symbolize_names: true)
   }
   set :use_github, production?
-  set :use_twitter, production?
+  set :use_twitter, ENV.fetch('USE_TWITTER', production?)
 end
 
 require 'helpers'
