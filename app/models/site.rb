@@ -57,8 +57,32 @@ module SeePoliticiansTweet
         @grouped_areas ||= unique_people.group_by { |person| person[:area].strip }
       end
 
+      def countries_with_twitter_handles
+        @countries_with_twitter_handles ||=
+          begin
+            countries = {}
+            everypolitican_data = File.expand_path('/everypolitician-data', __FILE__)
+            Sinatra::Application.countries.each do |country|
+              country[:legislatures].each do |l|
+                lp = l[:legislative_periods].first
+                csv_url = 'https://raw.githubusercontent.com/everypolitician/' \
+                  "everypolitician-data/master/#{lp[:csv]}"
+                csv_text = open(csv_url).read
+                csv_data = CSV.parse(csv_text, headers: true, header_converters: :symbol)
+                unique_people = csv_data.map(&:to_hash)
+                  .uniq { |person| person[:id] }
+                  .reject { |row| row[:end_date] }
+                if unique_people.map { |p| p[:twitter] }.compact.count >= 2
+                  countries[country[:name]] = unique_people
+                end
+              end
+            end
+            countries
+          end
+      end
+
       def create_or_update_areas
-        grouped_areas.each do |name, politicians|
+        countries_with_twitter_handles.each do |name, politicians|
           area = Area.find_or_create(site_id: id, name: name)
 
           next unless Sinatra::Application.use_twitter?
