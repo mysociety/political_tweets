@@ -19,6 +19,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network 'forwarded_port', guest: 5000, host: HOST_PORT
   config.vm.provision 'shell', path: 'scripts/provision.sh', privileged: false
   config.vm.synced_folder '.', '/vagrant', nfs: true
+  if File.directory?('../everypolitician-data')
+    config.vm.synced_folder '../everypolitician-data', '/everypolitician-data', nfs: true
+  end
   config.vm.network :private_network, ip: '192.168.50.4'
   config.vm.post_up_message = $post_up_message
   config.vm.provider :virtualbox do |v|
