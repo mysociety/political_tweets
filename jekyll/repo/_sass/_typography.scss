@@ -128,12 +128,15 @@ input[type="search"] {
 
 // Replicate the styling from the Twitter widget
 // that will replace this element in a few seconds.
-a.twitter-timeline {
+.twitter-timeline,
+.timeline-header {
   text-decoration: none;
   color: inherit;
   font: 12px/16px 'Helvetica Neue', Roboto, 'Segoe UI', Calibri, sans-serif;
   padding: 12px;
+}
 
+a.twitter-timeline {
   &:hover, &:focus {
     .twitter-timeline__loading {
       text-decoration: underline;

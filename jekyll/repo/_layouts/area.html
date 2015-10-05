@@ -1,37 +1,72 @@
 ---
 layout: default
 ---
-<div class="site-content">
-  {% if page.list_slug %}
-    <div class="site-content__tweets">
-        <a class="twitter-timeline"
-          data-dnt="true"
-          data-chrome="noborders"
-          href="https://twitter.com/{{ site.list_owner_screen_name }}/lists/{{ page.list_slug }}"
-          data-widget-id="598799140756320256"
-          data-list-owner-screen-name="{{ site.list_owner_screen_name }}"
-          data-list-slug="{{ page.list_slug }}">
-          <span class="twitter-timeline__name">{{ page.name }}</span>
-          <span class="twitter-timeline__loading">Loading tweets…</span>
-        </a>
-    </div>
+
+{% assign tweeting_politicians = 0 %}
+{% assign other_politicians = 0 %}
+
+{% for politician in page.politicians %}
+  {% if politician.screen_name %}
+    {% capture tweeting_politicians %}{{ tweeting_politicians | plus: 1 }}{% endcapture %}
   {% else %}
-    <p>No Twitter list exists for this area.</p>
+    {% capture other_politicians %}{{ other_politicians | plus: 1 }}{% endcapture %}
   {% endif %}
+{% endfor %}
+
+{% assign tweeting_politicians = tweeting_politicians | plus: 0 %}
+{% assign other_politicians = other_politicians | plus: 0 %}
+
+<div class="site-content">
+    <div class="site-content__tweets">
+      {% if tweeting_politicians > 0 and page.list_slug %}
+        <a class="twitter-timeline"
+            data-dnt="true"
+            data-chrome="noborders"
+            href="https://twitter.com/{{ site.list_owner_screen_name }}/lists/{{ page.list_slug }}"
+            data-widget-id="598799140756320256"
+            data-list-owner-screen-name="{{ site.list_owner_screen_name }}"
+            data-list-slug="{{ page.list_slug }}">
+            <span class="twitter-timeline__name">{{ page.name }}</span>
+            <span class="twitter-timeline__loading">Loading tweets…</span>
+        </a>
+      {% elsif tweeting_politicians == 0 %}
+        <div class="timeline-header">
+            <span class="twitter-timeline__name">{{ page.name }}</span>
+            <span class="twitter-timeline__loading">No politicians tweeting here?</span>
+        </div>
+        <div class="empty-timeline-message">
+            <p>We don’t know about any politicians who tweet in {{ page.name }}.</p>
+            <p>Perhaps you can help us find some?</p>
+        </div>
+      {% else %}
+        <div class="timeline-header">
+            <span class="twitter-timeline__name">{{ page.name }}</span>
+            <span class="twitter-timeline__loading">No politicians tweeting here?</span>
+        </div>
+        <div class="empty-timeline-message">
+            <p>Hmm… something went wrong. There’s no Twitter list for this area.</p>
+        </div>
+      {% endif %}
+    </div>
     <div class="site-content__people">
+
+      {% if tweeting_politicians > 0 %}
         <h2>Politicians tweeting here</h2>
+
         {% for politician in page.politicians %}
-        {% if politician.screen_name %}
+          {% if politician.screen_name %}
           <div class="person">
             <h3>{{ politician.name }}</h3>
             <p><a href="https://twitter.com/{{ politician.screen_name }}">@{{ politician.screen_name | replace: "@", "" | replace: "http://twitter.com/", "" | replace: "https://twitter.com/", "" }}</a></p>
           </div>
-        {% endif %}
+          {% endif %}
         {% endfor %}
+      {% endif %}
 
+      {% if other_politicians > 0 %}
         <h2>Other politicians here</h2>
 
-        {% for politician in page.politicians %}
+      {% for politician in page.politicians %}
         {% unless politician.screen_name %}
         <form class="person" action="{{ site.submission_url }}" method="post">
             <input type="hidden" name="submission[site_id]" value="{{ site.site_id }}">
@@ -44,9 +79,12 @@ layout: default
                     <input id="id_username_{{ politician.id }}" class="form-control" type="text" name="submission[twitter]" placeholder="@username">
                     <button type="submit" class="button">Add</button>
                 </span>
-            </p>
+              </p>
         </form>
         {% endunless %}
-        {% endfor %}
+      {% endfor %}
+
+      {% endif %}
+
     </div>
 </div>

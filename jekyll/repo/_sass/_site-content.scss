@@ -17,9 +17,18 @@ body {
 }
 
 .site-content {
-    a.twitter-timeline {
+    .twitter-timeline,
+    .timeline-header {
         padding: 1em;
     }
+}
+
+.empty-timeline-message {
+    margin: 0 1em 1em 1em;
+    padding: 1em;
+    text-align: center;
+    background-color: $color-yellow-100;
+    border-radius: 0.3em;
 }
 
 .site-content__people {
