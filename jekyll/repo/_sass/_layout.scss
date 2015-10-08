@@ -27,7 +27,7 @@ html, body {
     left: 0;
     bottom: 0;
     width: $desktop-header-width;
-    overflow: auto;
+    @include touch-friendly-scrolling();
 }
 
 .area-list {
@@ -36,7 +36,7 @@ html, body {
     bottom: 0;
     left: $desktop-header-width;
     width: $desktop-nav-width;
-    overflow: auto;
+    @include touch-friendly-scrolling();
 }
 
 .site-content {
@@ -47,7 +47,7 @@ html, body {
     bottom: 0;
     height: 100%;
     left: $desktop-header-width + $desktop-nav-width;
-    overflow: auto;
+    @include touch-friendly-scrolling();
 }
 
 .site-content__tweets {
@@ -65,7 +65,7 @@ html, body {
     right: 0;
     bottom: 0;
     width: $desktop-people-width;
-    overflow: auto;
+    @include touch-friendly-scrolling();
 }
 
 .twitter-timeline {
@@ -73,7 +73,7 @@ html, body {
     display: block !important;
 }
 
-iframe.twitter-timeline[data-widget-id] + a.twitter-timeline {
+iframe.twitter-timeline[data-widget-id] + .twitter-timeline {
   // There's a split second where the iframe and the placeholder link
   // both exist in the DOM at the same time, while the twitter widget is
   // in the process of loading. This is the gap between the iframe being
