@@ -15,3 +15,12 @@
     -moz-box-sizing: $boxmodel;
     box-sizing: $boxmodel;
 }
+
+@mixin touch-friendly-scrolling {
+    overflow: auto;
+
+    .device-has-invisible-scrollbars & {
+        overflow: scroll;
+        -webkit-overflow-scrolling: touch;
+    }
+}
