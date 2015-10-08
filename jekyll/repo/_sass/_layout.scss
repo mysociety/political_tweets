@@ -74,7 +74,7 @@ html, body {
     display: block !important;
 }
 
-iframe.twitter-timeline[data-widget-id] + a.twitter-timeline {
+iframe.twitter-timeline[data-widget-id] + .twitter-timeline {
   // There's a split second where the iframe and the placeholder link
   // both exist in the DOM at the same time, while the twitter widget is
   // in the process of loading. This is the gap between the iframe being
