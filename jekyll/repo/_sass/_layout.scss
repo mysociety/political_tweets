@@ -47,7 +47,6 @@ html, body {
     bottom: 0;
     height: 100%;
     left: $desktop-header-width + $desktop-nav-width;
-    max-width: $desktop-timeline-width + $desktop-people-width;
     @include touch-friendly-scrolling();
 }
 
@@ -82,6 +81,26 @@ iframe.twitter-timeline[data-widget-id] + .twitter-timeline {
   // being hidden. So, we hide the placeholder with CSS here, to avoid
   // a scrollbar being shown (because of two 100% height elements).
   display: none !important;
+}
+
+@media (min-width: $increment * 1024) {
+  // On browsers that support CSS calc() we stretch the people list
+  // to fill the space to the right of the twitter timeline.
+
+  .site-content__tweets {
+    // We use calc here as a no-op, just so that the max-width
+    // is ignored by any browsers that don't support calc().
+    max-width: calc(0em + #{$desktop-timeline-width});
+  }
+
+  .site-content__people {
+    // Width is whatever's left of the parent width after the
+    // timeline has been put in.
+    width: calc(100% - #{$desktop-timeline-width});
+    // Another calc() no-op, to stop min-width being applied
+    // by browsers that don't support the calc() width above.
+    min-width: calc(0em + #{$desktop-people-width});
+  }
 }
 
 @media (max-width: $increment * 1023) {
